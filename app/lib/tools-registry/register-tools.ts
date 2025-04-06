@@ -122,4 +122,44 @@ export function getFavoriteTools(favoriteIds: string[]): Tool[] {
   return favoriteIds
     .map(id => getToolById(id))
     .filter(Boolean) as Tool[];
+}
+
+/**
+ * 获取与指定工具相关的工具
+ * @param toolId 工具ID
+ * @param limit 限制返回的相关工具数量
+ * @returns 相关工具数组
+ */
+export function getRelatedTools(toolId: string, limit: number = 4): Tool[] {
+  const currentTool = getToolById(toolId);
+  if (!currentTool) return [];
+
+  // 1. 获取同类别的工具
+  const sameCategoryTools = getToolsByCategory(currentTool.category)
+    .filter(tool => tool.id !== toolId);
+
+  // 2. 如果同类别工具不足，添加其他类别的工具
+  if (sameCategoryTools.length < limit) {
+    const otherTools = getAllTools()
+      .filter(tool => 
+        tool.id !== toolId && 
+        tool.category !== currentTool.category &&
+        // 如果有关键词匹配，优先选择
+        (currentTool.meta.keywords?.some(keyword => 
+          tool.meta.keywords?.includes(keyword)
+        ) || true)
+      );
+    
+    // 随机排序其他工具以增加推荐多样性
+    const shuffledOtherTools = otherTools.sort(() => 0.5 - Math.random());
+    
+    // 将同类别工具和其他类别工具合并，确保结果中没有重复
+    return [...sameCategoryTools, ...shuffledOtherTools]
+      .slice(0, limit);
+  }
+
+  // 如果同类别工具够了，随机选择同类别中的工具
+  return sameCategoryTools
+    .sort(() => 0.5 - Math.random())
+    .slice(0, limit);
 } 
