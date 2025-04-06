@@ -3,57 +3,63 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
   FiSearch, FiCode, FiTerminal, FiCpu, FiStar,
-  FiType, FiImage, FiFileText, FiHelpCircle, FiClock
+  FiType, FiImage, FiFileText, FiHelpCircle, FiClock, FiGlobe
 } from 'react-icons/fi';
 import { registerAllTools, getAllTools, getToolsByCategory } from './lib/tools-registry/register-tools';
 import { Tool, ToolCategory } from './lib/tools-registry/types';
 import Link from 'next/link';
 import NavBar from './components/NavBar';
 import { useFavorites } from './hooks/useFavorites';
+import React from 'react';
 
 // 定义工具分类
 const toolCategories = [
   {
-    id: 'text',
-    name: '文本工具',
-    icon: FiType,
-    description: '文本处理、编解码、格式化等工具',
-    color: 'blue',
-  },
-  {
-    id: 'json',
-    name: 'JSON工具',
-    icon: FiCode,
-    description: 'JSON格式化、校验、转换等工具',
-    color: 'green',
-  },
-  {
     id: 'dev',
     name: '开发辅助',
-    icon: FiTerminal,
-    description: '为开发者准备的日常辅助工具',
-    color: 'purple',
+    icon: FiCode,
+    description: '为开发人员提供的实用工具',
+    color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+    tools: [
+      { id: 'regex-tester', name: '正则表达式测试', description: '测试和调试正则表达式' },
+      { id: 'timestamp', name: '时间戳转换', description: '在Unix时间戳和人类可读日期之间相互转换' },
+      { id: 'uuid', name: 'UUID生成器', description: '生成多种版本的通用唯一标识符 (UUID)' },
+      { id: 'json-formatter', name: 'JSON格式化', description: '格式化和验证JSON数据' },
+    ]
   },
   {
-    id: 'runtime',
-    name: '在线执行',
-    icon: FiCpu,
-    description: '在线运行和测试各种编程语言代码',
-    color: 'orange',
+    id: 'text',
+    name: '文本处理',
+    icon: FiType,
+    description: '文本编码、转换和格式化工具',
+    color: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
+    tools: [
+      { id: 'base64', name: 'Base64编解码', description: '对文本和文件进行Base64编码和解码' },
+      { id: 'url-encoder', name: 'URL编解码', description: '对URL进行编码和解码' },
+      { id: 'text-diff', name: '文本比较', description: '比较两段文本的差异' },
+    ]
   },
   {
     id: 'web',
     name: '爬虫工具',
-    icon: FiFileText,
-    description: '网络请求、数据提取的辅助工具',
-    color: 'teal',
+    icon: FiGlobe,
+    description: '网页数据抓取和测试工具',
+    color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+    tools: [
+      { id: 'http-request', name: 'HTTP请求测试', description: '发送HTTP请求并分析响应结果' },
+      { id: 'user-agent', name: 'User-Agent生成', description: '生成各种浏览器和设备的User-Agent字符串' },
+    ]
   },
   {
     id: 'misc',
     name: '其它工具',
     icon: FiHelpCircle,
-    description: '实用的辅助工具集合',
-    color: 'gray',
+    description: '各种实用小工具集合',
+    color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+    tools: [
+      { id: 'password-generator', name: '密码生成器', description: '生成安全、强大的随机密码' },
+      { id: 'qr-code', name: '二维码生成', description: '生成和解析二维码' },
+    ]
   },
 ];
 
@@ -175,7 +181,7 @@ export default function Home() {
                   <div key={category.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                     <div className="p-5">
                       <div className={`w-12 h-12 flex items-center justify-center rounded-full mb-4 ${colorMap[category.color]}`}>
-                        <category.icon className="h-6 w-6" />
+                        {React.createElement(category.icon, { className: "h-6 w-6" })}
                       </div>
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                         {category.name}
@@ -250,7 +256,7 @@ export default function Home() {
                       </Link>
                       <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center shadow hover:shadow-md transition-shadow flex flex-col items-center relative z-10 pointer-events-none">
                         <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 mb-3">
-                          <tool.icon className="h-6 w-6" />
+                          {React.createElement(tool.icon, { className: "h-6 w-6" })}
                         </div>
                         <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
                           {tool.name}
@@ -287,7 +293,7 @@ export default function Home() {
                     </Link>
                     <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center shadow hover:shadow-md transition-shadow flex flex-col items-center relative z-10 pointer-events-none">
                       <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 mb-3">
-                        <tool.icon className="h-6 w-6" />
+                        {React.createElement(tool.icon, { className: "h-6 w-6" })}
                       </div>
                       <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
                         {tool.name}
@@ -296,8 +302,8 @@ export default function Home() {
                     <button
                       onClick={(e) => handleFavoriteClick(e, tool.id)}
                       className={`absolute top-1 right-1 p-1.5 bg-white dark:bg-gray-700 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity focus:outline-none z-20 ${isFavorite(tool.id)
-                          ? 'text-yellow-500 hover:text-yellow-600'
-                          : 'text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400'
+                        ? 'text-yellow-500 hover:text-yellow-600'
+                        : 'text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400'
                         }`}
                       title={isFavorite(tool.id) ? '取消收藏' : '添加到收藏'}
                     >

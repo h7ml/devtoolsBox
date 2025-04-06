@@ -17,6 +17,10 @@ const nextConfig = {
     });
     return config;
   },
+  // 禁用SWC
+  swcMinify: false,
+  // 指定需要编译的包
+  transpilePackages: ['next/font/google'],
 };
 
 module.exports = nextConfig; 
