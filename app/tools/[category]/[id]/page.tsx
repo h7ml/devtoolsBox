@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import { registerAllTools, getTool } from '../../../lib/tools-registry/register-tools';
+import { registerAllTools, getToolById } from '../../../lib/tools-registry/register-tools';
 import { Tool } from '../../../lib/tools-registry/types';
 import NavBar from '../../../components/NavBar';
 import { FiArrowLeft, FiStar } from 'react-icons/fi';
@@ -21,7 +21,7 @@ export default function ToolPage() {
     registerAllTools();
 
     if (params.id && params.category) {
-      const foundTool = getTool(params.id as string);
+      const foundTool = getToolById(params.id as string);
       if (foundTool) {
         setTool(foundTool);
 

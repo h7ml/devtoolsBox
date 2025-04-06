@@ -83,26 +83,33 @@ export default function Home() {
 
   // 初始化时只加载一次工具
   useEffect(() => {
-    // 确保注册了所有工具
-    registerAllTools();
+    // 使用自执行异步函数加载工具
+    (async () => {
+      try {
+        // 确保注册了所有工具
+        await registerAllTools();
 
-    // 按类别组织工具
-    const toolsByCategory: Record<string, Tool[]> = {};
-    const allTools = getAllTools();
+        // 按类别组织工具
+        const toolsByCategory: Record<string, Tool[]> = {};
+        const allTools = getAllTools();
 
-    toolCategories.forEach(category => {
-      const categoryTools = getToolsByCategory(category.id as ToolCategory);
-      if (categoryTools.length > 0) {
-        toolsByCategory[category.id] = categoryTools;
+        toolCategories.forEach(category => {
+          const categoryTools = getToolsByCategory(category.id as ToolCategory);
+          if (categoryTools.length > 0) {
+            toolsByCategory[category.id] = categoryTools;
+          }
+        });
+
+        setRegisteredTools(toolsByCategory);
+
+        // 加载收藏工具
+        setFavoriteTools(getFavoriteTools(allTools));
+      } catch (error) {
+        console.error('工具加载失败:', error);
+      } finally {
+        setLoading(false);
       }
-    });
-
-    setRegisteredTools(toolsByCategory);
-
-    // 加载收藏工具
-    setFavoriteTools(getFavoriteTools(allTools));
-
-    setLoading(false);
+    })();
   }, []); // 空依赖数组，只在组件挂载时执行一次
 
   // 筛选分类和工具
