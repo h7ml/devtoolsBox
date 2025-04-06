@@ -9,27 +9,7 @@ import Link from 'next/link';
 import { FiSearch, FiArrowLeft, FiStar } from 'react-icons/fi';
 import { useFavorites } from '../hooks/useFavorites';
 import ToolCard from '../components/ToolCard';
-
-// 定义工具分类颜色映射
-const categoryColorMap: Record<string, string> = {
-  'text': 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300',
-  'json': 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-300',
-  'dev': 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300',
-  'runtime': 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-300',
-  'web': 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-300',
-  'misc': 'bg-gray-50 dark:bg-gray-700/30 text-gray-600 dark:text-gray-300',
-};
-
-// 分类名称映射
-const categoryNameMap: Record<string, string> = {
-  'text': '文本工具',
-  'json': 'JSON工具',
-  'dev': '开发辅助',
-  'runtime': '在线执行',
-  'web': '爬虫工具',
-  'misc': '其它工具',
-};
-
+import { categoryNameMap } from '../lib/tools-registry/categories';
 export default function ToolListPage() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
