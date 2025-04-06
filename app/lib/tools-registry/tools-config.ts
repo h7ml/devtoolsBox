@@ -2,7 +2,7 @@
  * 工具配置文件
  * 
  * 由脚本自动生成，请勿手动修改
- * 生成时间: 2025-04-06T07:28:25.636Z
+ * 生成时间: 2025-04-06T08:32:41.402Z
  */
 import { ToolCategory } from './types';
 
@@ -60,6 +60,11 @@ export const toolConfigs: ToolConfig[] = [
   },
 
   // 网络工具
+  {
+    id: 'css-selector',
+    category: 'web',
+    importPath: () => import('../../tools/crawler/css-selector')
+  },
   {
     id: 'http-request',
     category: 'web',
