@@ -5,6 +5,7 @@ export type ToolCategory =
   | 'dev'    // 开发辅助
   | 'runtime' // 运行时工具
   | 'web'    // 网络/爬虫工具
+  | 'json'   // JSON工具
   | 'misc';  // 其他工具
 
 export interface Tool {

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { FiCopy, FiTrash2, FiUpload } from 'react-icons/fi';
+import { useState, ChangeEvent } from 'react';
+import { FiCopy, FiTrash2, FiDownload, FiUpload } from 'react-icons/fi';
 import { Tool } from '../../../lib/tools-registry/types';
 import { FiCode } from 'react-icons/fi';
 
@@ -11,26 +11,59 @@ const JsonFormatter = () => {
   const [error, setError] = useState<string | null>(null);
   const [indentSize, setIndentSize] = useState<number>(2);
 
-  const formatJson = () => {
-    try {
-      if (!input.trim()) {
-        setOutput('');
-        setError(null);
-        return;
-      }
+  const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setInput(value);
 
-      const parsedJson = JSON.parse(input);
-      const formattedJson = JSON.stringify(parsedJson, null, indentSize);
-      setOutput(formattedJson);
+    if (!value.trim()) {
+      setOutput('');
+      setError(null);
+      return;
+    }
+
+    try {
+      // 解析 JSON 字符串
+      const parsedJson = JSON.parse(value);
+      // 格式化 JSON 对象
+      const formatted = JSON.stringify(parsedJson, null, indentSize);
+      setOutput(formatted);
       setError(null);
     } catch (err) {
-      setError((err as Error).message);
+      setError(`JSON 解析错误: ${(err as Error).message}`);
       setOutput('');
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(e.target.value);
+  const handleIndentSizeChange = (size: number) => {
+    setIndentSize(size);
+    if (input.trim()) {
+      try {
+        const parsedJson = JSON.parse(input);
+        const formatted = JSON.stringify(parsedJson, null, size);
+        setOutput(formatted);
+        setError(null);
+      } catch (err) {
+        // 如果之前已经有错误，不需要重新设置错误
+        if (!error) {
+          setError(`JSON 解析错误: ${(err as Error).message}`);
+          setOutput('');
+        }
+      }
+    }
+  };
+
+  const handleMinify = () => {
+    if (input.trim()) {
+      try {
+        const parsedJson = JSON.parse(input);
+        const minified = JSON.stringify(parsedJson);
+        setOutput(minified);
+        setError(null);
+      } catch (err) {
+        setError(`JSON 解析错误: ${(err as Error).message}`);
+        setOutput('');
+      }
+    }
   };
 
   const clearInput = () => {
@@ -39,25 +72,54 @@ const JsonFormatter = () => {
     setError(null);
   };
 
-  const copyToClipboard = async () => {
-    if (output) {
+  const copyToClipboard = async (text: string) => {
+    if (text) {
       try {
-        await navigator.clipboard.writeText(output);
+        await navigator.clipboard.writeText(text);
         alert('已复制到剪贴板');
       } catch (err) {
         console.error('复制失败:', err);
+        alert('复制失败');
       }
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const downloadJson = () => {
+    if (!output) return;
+
+    try {
+      const blob = new Blob([output], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'formatted.json';
+      link.click();
+
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('下载失败:', err);
+      alert('下载失败');
+    }
+  };
+
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      if (event.target?.result) {
-        setInput(event.target.result as string);
+      const content = event.target?.result as string;
+      setInput(content);
+
+      try {
+        const parsedJson = JSON.parse(content);
+        const formatted = JSON.stringify(parsedJson, null, indentSize);
+        setOutput(formatted);
+        setError(null);
+      } catch (err) {
+        setError(`JSON 解析错误: ${(err as Error).message}`);
+        setOutput('');
       }
     };
     reader.readAsText(file);
@@ -67,102 +129,136 @@ const JsonFormatter = () => {
     <div className="w-full max-w-6xl mx-auto p-4">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">JSON 格式化工具</h1>
-        <p className="text-gray-600 dark:text-gray-300">格式化和验证JSON数据，使其更易于阅读和调试</p>
+        <p className="text-gray-600 dark:text-gray-300">
+          美化、压缩或验证您的 JSON 数据
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <label htmlFor="json-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              JSON 输入
-            </label>
-            <div className="flex space-x-2">
-              <button
-                onClick={clearInput}
-                className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                title="清空"
-              >
-                <FiTrash2 className="w-4 h-4" />
-              </button>
-              <label className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer" title="上传文件">
-                <FiUpload className="w-4 h-4" />
-                <input type="file" accept=".json,.txt" className="hidden" onChange={handleFileUpload} />
-              </label>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-8">
+        <div className="p-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 输入区域 */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  输入 JSON
+                </label>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={clearInput}
+                    className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    title="清空"
+                  >
+                    <FiTrash2 className="w-4 h-4" />
+                  </button>
+                  <label className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer" title="上传文件">
+                    <FiUpload className="w-4 h-4" />
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".json,application/json"
+                      onChange={handleFileUpload}
+                    />
+                  </label>
+                  <button
+                    onClick={() => copyToClipboard(input)}
+                    className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    title="复制输入"
+                  >
+                    <FiCopy className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <textarea
+                className="w-full h-64 p-3 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+                value={input}
+                onChange={handleInputChange}
+                placeholder='在这里粘贴您的 JSON 数据...\n例如: {"name":"DevToolsBox","version":"1.0.0"}'
+              ></textarea>
+            </div>
+
+            {/* 输出区域 */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  格式化结果
+                </label>
+                <div className="flex space-x-2">
+                  {output && (
+                    <button
+                      onClick={downloadJson}
+                      className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      title="下载 JSON"
+                    >
+                      <FiDownload className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => copyToClipboard(output)}
+                    className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    title="复制结果"
+                  >
+                    <FiCopy className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="relative h-64">
+                <textarea
+                  readOnly
+                  className={`w-full h-full p-3 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white ${error
+                    ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
+                    : 'border-gray-300 dark:border-gray-600'
+                    }`}
+                  value={error ? error : output}
+                  placeholder="格式化后的 JSON 将显示在这里..."
+                ></textarea>
+              </div>
             </div>
           </div>
-          <textarea
-            id="json-input"
-            className="w-full h-80 p-3 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white font-mono text-sm"
-            value={input}
-            onChange={handleInputChange}
-            placeholder='在这里粘贴您的JSON，例如: {"name":"DevToolsBox","version":"1.0.0"}'
-          ></textarea>
-        </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <label htmlFor="json-output" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              格式化结果
-            </label>
-            {output && (
-              <button
-                onClick={copyToClipboard}
-                className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                title="复制"
-              >
-                <FiCopy className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-          <div className="relative h-80">
-            <textarea
-              id="json-output"
-              readOnly
-              className={`w-full h-full p-3 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 font-mono text-sm ${error
-                  ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
-                  : 'border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
-                }`}
-              value={error ? `错误: ${error}` : output}
-              placeholder="格式化的JSON将在这里显示"
-            ></textarea>
+          {/* 操作按钮 */}
+          <div className="mt-6 flex flex-wrap gap-3">
+            <div className="flex items-center rounded-md border border-gray-300 dark:border-gray-600 overflow-hidden">
+              <span className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                缩进大小
+              </span>
+              {[2, 4, 8].map((size) => (
+                <button
+                  key={size}
+                  onClick={() => handleIndentSizeChange(size)}
+                  className={`px-3 py-2 text-sm ${indentSize === size
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                    }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={handleMinify}
+              className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600"
+            >
+              压缩
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-4 items-center">
-        <div className="flex items-center">
-          <label htmlFor="indent-size" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">
-            缩进大小:
-          </label>
-          <select
-            id="indent-size"
-            value={indentSize}
-            onChange={(e) => setIndentSize(Number(e.target.value))}
-            className="mt-1 block w-20 pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-          >
-            <option value={2}>2</option>
-            <option value={4}>4</option>
-            <option value={8}>8</option>
-          </select>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+        <div className="p-5">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">使用说明</h3>
+          <ul className="space-y-2 text-gray-600 dark:text-gray-300 list-disc list-inside">
+            <li>直接在输入框中粘贴 JSON 数据，或上传 JSON 文件</li>
+            <li>可以调整缩进大小，使 JSON 格式更符合您的偏好</li>
+            <li>使用"压缩"按钮可以移除所有空格，生成最小化的 JSON</li>
+            <li>格式化后的 JSON 可以复制或下载</li>
+            <li>工具会自动检查 JSON 格式是否有效，并提示错误信息</li>
+          </ul>
         </div>
-
-        <button
-          onClick={formatJson}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 text-white rounded-md focus:outline-none"
-        >
-          格式化 JSON
-        </button>
-      </div>
-
-      <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">使用提示</h3>
-        <ul className="text-gray-600 dark:text-gray-300 space-y-2 list-disc list-inside">
-          <li>粘贴原始JSON数据到输入框，然后点击"格式化JSON"按钮</li>
-          <li>您可以上传JSON文件进行格式化</li>
-          <li>调整缩进大小来适应您的需求</li>
-          <li>工具会自动验证JSON格式的正确性，并显示任何格式错误</li>
-          <li>格式化后的结果可以一键复制到剪贴板</li>
-        </ul>
       </div>
     </div>
   );
@@ -171,15 +267,15 @@ const JsonFormatter = () => {
 const tool: Tool = {
   id: 'json-formatter',
   name: 'JSON 格式化',
-  description: '格式化和验证JSON数据，使其更易于阅读和调试',
-  category: 'text',
+  description: '美化、压缩或验证您的 JSON 数据',
+  category: 'json',
   icon: FiCode,
   component: JsonFormatter,
   meta: {
-    keywords: ['json', '格式化', '美化', '验证', '缩进'],
+    keywords: ['json', '格式化', '美化', '验证', '压缩'],
     examples: [
       '{"name":"DevToolsBox","version":"1.0.0"}',
-      '{"users":[{"id":1,"name":"张三"},{"id":2,"name":"李四"}]}'
+      '{"users":[{"id":1,"name":"用户1"},{"id":2,"name":"用户2"}]}'
     ]
   }
 };
