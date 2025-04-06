@@ -139,25 +139,25 @@ export default function Home() {
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NavBar />
 
-      {/* 搜索区域 */}
-      <div className="pt-16 pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-blue-500 to-blue-600 dark:from-blue-800 dark:to-blue-900">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-white mb-6">
-            程序员在线工具箱
+      {/* 搜索区域 - 融合风格 */}
+      <div className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+        <div className="max-w-5xl mx-auto text-center">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+            程序员<span className="text-orange-500">工具箱</span>
           </h1>
-          <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-10">
-            提供各种开发工具，提升您的开发效率和体验
+          <p className="text-base text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-10">
+            高效便捷的开发工具集合，让您的工作效率翻倍
           </p>
 
           <div className="max-w-2xl mx-auto relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <FiSearch className="h-5 w-5 text-gray-400" />
             </div>
             <input
               type="text"
-              className="block w-full pl-10 pr-4 py-3 border border-blue-400 rounded-full
-                       bg-white dark:bg-gray-800 dark:border-blue-700 dark:text-white
-                       shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="block w-full pl-11 pr-4 py-3 border-0 rounded-xl
+                       bg-white/90 dark:bg-gray-800/90 dark:text-white backdrop-blur-sm
+                       shadow-md focus:outline-none focus:ring-2 focus:ring-orange-500"
               placeholder="搜索工具..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -168,12 +168,12 @@ export default function Home() {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
         </div>
       ) : (
         <>
-          {/* 工具分类 */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* 工具分类 - 融合风格 */}
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {toolCategories.map((category) => {
                 const categoryTools = registeredTools[category.id] || [];
@@ -185,21 +185,23 @@ export default function Home() {
                 }
 
                 return (
-                  <div key={category.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="p-5">
-                      <div className={`w-12 h-12 flex items-center justify-center rounded-full mb-4 ${colorMap[category.color]}`}>
-                        {React.createElement(category.icon, { className: "h-6 w-6" })}
+                  <div key={category.id} className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-shadow border border-gray-100/50 dark:border-gray-700/50">
+                    <div className="p-6">
+                      <div className="flex items-center mb-5">
+                        <div className={`w-12 h-12 flex items-center justify-center rounded-xl mr-3 bg-orange-500/90 text-white backdrop-filter backdrop-blur-sm shadow-sm`}>
+                          {React.createElement(category.icon, { className: "h-6 w-6" })}
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                          {category.name}
+                        </h3>
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        {category.name}
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 h-12">
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-5">
                         {category.description}
                       </p>
 
-                      <div className="space-y-2">
+                      <div className="space-y-2.5">
                         {filteredCategoryTools.slice(0, 4).map((tool) => (
-                          <div key={tool.id} className="flex items-start p-2 -mx-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors relative">
+                          <div key={tool.id} className="flex items-start p-2.5 rounded-xl hover:bg-gray-50/80 dark:hover:bg-gray-700/50 transition-colors relative">
                             <Link
                               href={`/tools/${tool.category}/${tool.id}`}
                               className="absolute inset-0 z-0"
@@ -212,8 +214,8 @@ export default function Home() {
                             </span>
                             <button
                               onClick={(e) => handleFavoriteClick(e, tool.id)}
-                              className={`p-1 rounded-full focus:outline-none z-10 relative ${isFavorite(tool.id)
-                                ? 'text-yellow-500 hover:text-yellow-600'
+                              className={`p-1.5 rounded-full focus:outline-none z-10 relative ${isFavorite(tool.id)
+                                ? 'text-orange-500 hover:text-orange-600'
                                 : 'text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400'
                                 }`}
                               title={isFavorite(tool.id) ? '取消收藏' : '添加到收藏'}
@@ -226,14 +228,14 @@ export default function Home() {
                         {filteredCategoryTools.length > 4 && (
                           <Link
                             href={`/tools/?category=${category.id}`}
-                            className="block text-center text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 mt-4"
+                            className="block text-center mt-5 text-sm text-orange-500 hover:text-orange-600 font-medium py-2 rounded-xl transition-colors hover:bg-orange-50/50 dark:hover:bg-gray-800/30"
                           >
-                            查看所有 {category.name}
+                            查看全部 <span className="inline-block ml-1">→</span>
                           </Link>
                         )}
 
                         {filteredCategoryTools.length === 0 && (
-                          <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
+                          <div className="text-center text-sm text-gray-500 dark:text-gray-400 py-3">
                             暂无工具
                           </div>
                         )}
@@ -245,13 +247,16 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 热门工具 */}
+          {/* 收藏工具 - 融合风格 */}
           {favoriteTools.length > 0 && (
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-10 mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">我的收藏</h2>
+            <div className="bg-gray-50/80 dark:bg-gray-800/30 backdrop-blur-sm py-12">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 flex items-center">
+                  <FiStar className="mr-2 text-orange-500" />
+                  我的收藏
+                </h2>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
                   {favoriteTools.map((tool) => (
                     <div key={tool.id} className="relative group">
                       <Link
@@ -261,8 +266,8 @@ export default function Home() {
                       >
                         <span className="sr-only">打开{tool.name}工具</span>
                       </Link>
-                      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center shadow hover:shadow-md transition-shadow flex flex-col items-center relative z-10 pointer-events-none">
-                        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 mb-3">
+                      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-5 text-center shadow-sm hover:shadow transition-shadow flex flex-col items-center relative z-10 pointer-events-none border border-gray-100/50 dark:border-gray-700/50">
+                        <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-orange-500 text-white mb-4 shadow-sm">
                           {React.createElement(tool.icon, { className: "h-6 w-6" })}
                         </div>
                         <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
@@ -271,7 +276,7 @@ export default function Home() {
                       </div>
                       <button
                         onClick={(e) => handleFavoriteClick(e, tool.id)}
-                        className="absolute top-1 right-1 p-1.5 bg-white dark:bg-gray-700 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity focus:outline-none text-yellow-500 hover:text-yellow-600 z-20"
+                        className="absolute top-2 right-2 p-1.5 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity focus:outline-none text-orange-500 hover:text-orange-600 z-20"
                         title="取消收藏"
                       >
                         <FiStar className="w-4 h-4" fill="currentColor" />
@@ -283,48 +288,46 @@ export default function Home() {
             </div>
           )}
 
-          {/* 热门工具 */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-10 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">热门工具</h2>
+          {/* 热门工具 - 融合风格 */}
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">热门工具</h2>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {getAllTools().slice(0, 6).map((tool) => (
-                  <div key={tool.id} className="relative group">
-                    <Link
-                      href={`/tools/${tool.category}/${tool.id}`}
-                      className="absolute inset-0 z-0"
-                      aria-label={`打开${tool.name}工具`}
-                    >
-                      <span className="sr-only">打开{tool.name}工具</span>
-                    </Link>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center shadow hover:shadow-md transition-shadow flex flex-col items-center relative z-10 pointer-events-none">
-                      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 mb-3">
-                        {React.createElement(tool.icon, { className: "h-6 w-6" })}
-                      </div>
-                      <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                        {tool.name}
-                      </span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
+              {getAllTools().slice(0, 6).map((tool) => (
+                <div key={tool.id} className="relative group">
+                  <Link
+                    href={`/tools/${tool.category}/${tool.id}`}
+                    className="absolute inset-0 z-0"
+                    aria-label={`打开${tool.name}工具`}
+                  >
+                    <span className="sr-only">打开{tool.name}工具</span>
+                  </Link>
+                  <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-5 text-center shadow-sm hover:shadow transition-shadow flex flex-col items-center relative z-10 pointer-events-none border border-gray-100/50 dark:border-gray-700/50">
+                    <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-orange-100/90 dark:bg-gray-700/90 text-orange-500 dark:text-orange-400 mb-4 shadow-sm">
+                      {React.createElement(tool.icon, { className: "h-6 w-6" })}
                     </div>
-                    <button
-                      onClick={(e) => handleFavoriteClick(e, tool.id)}
-                      className={`absolute top-1 right-1 p-1.5 bg-white dark:bg-gray-700 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity focus:outline-none z-20 ${isFavorite(tool.id)
-                        ? 'text-yellow-500 hover:text-yellow-600'
-                        : 'text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400'
-                        }`}
-                      title={isFavorite(tool.id) ? '取消收藏' : '添加到收藏'}
-                    >
-                      <FiStar className="w-4 h-4" fill={isFavorite(tool.id) ? 'currentColor' : 'none'} />
-                    </button>
+                    <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                      {tool.name}
+                    </span>
                   </div>
-                ))}
+                  <button
+                    onClick={(e) => handleFavoriteClick(e, tool.id)}
+                    className={`absolute top-2 right-2 p-1.5 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity focus:outline-none z-20 ${isFavorite(tool.id)
+                      ? 'text-orange-500 hover:text-orange-600'
+                      : 'text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400'
+                      }`}
+                    title={isFavorite(tool.id) ? '取消收藏' : '添加到收藏'}
+                  >
+                    <FiStar className="w-4 h-4" fill={isFavorite(tool.id) ? 'currentColor' : 'none'} />
+                  </button>
+                </div>
+              ))}
 
-                {getAllTools().length === 0 && (
-                  <div className="col-span-full text-center py-8 text-gray-500 dark:text-gray-400">
-                    暂无工具，请先添加工具
-                  </div>
-                )}
-              </div>
+              {getAllTools().length === 0 && (
+                <div className="col-span-full text-center py-8 text-gray-500 dark:text-gray-400">
+                  暂无工具，请先添加工具
+                </div>
+              )}
             </div>
           </div>
         </>
