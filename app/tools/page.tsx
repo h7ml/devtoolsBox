@@ -8,6 +8,7 @@ import NavBar from '../components/NavBar';
 import Link from 'next/link';
 import { FiSearch, FiArrowLeft, FiStar } from 'react-icons/fi';
 import { useFavorites } from '../hooks/useFavorites';
+import ToolCard from '../components/ToolCard';
 
 // 定义工具分类颜色映射
 const categoryColorMap: Record<string, string> = {
@@ -37,29 +38,40 @@ export default function ToolListPage() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
   const { isFavorite, toggleFavorite } = useFavorites();
+  const [initError, setInitError] = useState<string | null>(null);
 
   // 只在初始化和分类参数变化时加载工具
   useEffect(() => {
-    // 确保工具已注册
-    registerAllTools();
+    const loadTools = async () => {
+      try {
+        // 注册所有工具（异步）
+        await registerAllTools();
 
-    // 获取工具
-    let filteredTools: Tool[];
-    if (categoryParam) {
-      filteredTools = getToolsByCategory(categoryParam as ToolCategory);
-      setCategories([categoryParam]);
-    } else {
-      filteredTools = getAllTools();
+        // 获取工具
+        let filteredTools: Tool[];
+        if (categoryParam) {
+          filteredTools = getToolsByCategory(categoryParam as ToolCategory);
+          setCategories([categoryParam]);
+        } else {
+          filteredTools = getAllTools();
 
-      // 获取所有分类
-      const uniqueCategories = Array.from(
-        new Set(filteredTools.map(tool => tool.category))
-      );
-      setCategories(uniqueCategories);
-    }
+          // 获取所有分类
+          const uniqueCategories = Array.from(
+            new Set(filteredTools.map(tool => tool.category))
+          );
+          setCategories(uniqueCategories);
+        }
 
-    setTools(filteredTools);
-    setLoading(false);
+        setTools(filteredTools);
+      } catch (error) {
+        console.error('加载工具失败:', error);
+        setInitError('工具加载失败，请刷新页面重试');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTools();
   }, [categoryParam]); // 仅依赖分类参数
 
   // 过滤工具
@@ -68,7 +80,7 @@ export default function ToolListPage() {
     return tools.filter(tool =>
       tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tool.meta.keywords.some(keyword =>
+      (tool.meta?.keywords || []).some(keyword =>
         keyword.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
@@ -135,6 +147,17 @@ export default function ToolListPage() {
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
+      ) : initError ? (
+        <div className="flex flex-col items-center justify-center py-12">
+          <p className="text-red-500 text-xl mb-2">初始化失败</p>
+          <p className="text-gray-500 dark:text-gray-400 mb-4">{initError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+          >
+            刷新页面
+          </button>
+        </div>
       ) : (
         <div className="px-4 pb-16">
           <div className="max-w-7xl mx-auto">
@@ -154,36 +177,12 @@ export default function ToolListPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {categoryTools.map(tool => (
-                      <div key={tool.id} className="relative group">
-                        <Link
-                          href={`/tools/${tool.category}/${tool.id}`}
-                          className="absolute inset-0 z-0"
-                          aria-label={`打开${tool.name}工具`}
-                        >
-                          <span className="sr-only">打开{tool.name}工具</span>
-                        </Link>
-                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 block relative z-10 pointer-events-none">
-                          <div className="flex items-center mb-3">
-                            <div className={`p-2 rounded-md ${categoryColorMap[tool.category] || categoryColorMap['misc']} mr-3`}>
-                              <tool.icon className="h-5 w-5" />
-                            </div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">{tool.name}</h3>
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {tool.description}
-                          </p>
-                        </div>
-                        <button
-                          onClick={(e) => handleFavoriteClick(e, tool.id)}
-                          className={`absolute top-2 right-2 p-1.5 bg-white dark:bg-gray-700 rounded-full shadow focus:outline-none z-20 ${isFavorite(tool.id)
-                            ? 'text-yellow-500 hover:text-yellow-600'
-                            : 'text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 opacity-0 group-hover:opacity-100'
-                            } transition-opacity`}
-                          title={isFavorite(tool.id) ? '取消收藏' : '添加到收藏'}
-                        >
-                          <FiStar className="w-4 h-4" fill={isFavorite(tool.id) ? 'currentColor' : 'none'} />
-                        </button>
-                      </div>
+                      <ToolCard
+                        key={tool.id}
+                        tool={tool}
+                        isFavorite={isFavorite(tool.id)}
+                        onToggleFavorite={() => toggleFavorite(tool.id)}
+                      />
                     ))}
                   </div>
                 </div>

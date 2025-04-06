@@ -43,4 +43,10 @@ class ToolRegistry implements ToolRegistryInterface {
 // 单例模式
 const toolRegistry = new ToolRegistry();
 
-export default toolRegistry; 
+// 导出工具注册表实例
+export default toolRegistry;
+
+// 导出类型、注册函数和工具自动注册类
+export * from './types';
+export * from './register-tools';
+export { ToolAutoRegistrar } from './auto-register'; 

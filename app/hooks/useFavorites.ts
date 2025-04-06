@@ -52,6 +52,7 @@ export function useFavorites() {
   }, [favorites]);
   
   return {
+    favorites,
     isFavorite,
     toggleFavorite,
     getFavoriteToolIds,
