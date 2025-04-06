@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiCode, FiCopy, FiTrash2, FiSearch, FiInfo } from 'react-icons/fi';
+import { FiCode, FiCopy, FiTrash2, FiSearch, FiInfo, FiCheckSquare, FiDatabase, FiLayout, FiCheck, FiFile } from 'react-icons/fi';
 import { Tool } from '../../../lib/tools-registry/types';
 
 interface MatchedElement {
@@ -11,7 +11,7 @@ interface MatchedElement {
   attributes: Record<string, string>;
 }
 
-const CssSelectorTester: React.FC = () => {
+const CssSelectorTester = () => {
   const [html, setHtml] = useState<string>('');
   const [selector, setSelector] = useState<string>('');
   const [matchedElements, setMatchedElements] = useState<MatchedElement[]>([]);
@@ -81,7 +81,7 @@ const CssSelectorTester: React.FC = () => {
       });
 
       setMatchedElements(results);
-    } catch (err) {
+    } catch (err: any) {
       setError(`选择器语法错误: ${err.message}`);
       setMatchedElements([]);
     }
@@ -108,262 +108,264 @@ const CssSelectorTester: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="mb-4">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">CSS选择器测试器</h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">
-          输入HTML内容和CSS选择器，查找匹配的元素并提取信息
-        </p>
-      </div>
-
-      {/* 控制区域 */}
-      <div className="flex flex-wrap gap-4 mb-4">
-        <div className="flex-1 min-w-[250px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            选择示例
-          </label>
-          <select
-            value={selectedExample}
-            onChange={(e) => setSelectedExample(e.target.value)}
-            className="w-full py-2 px-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="">-- 选择示例 --</option>
-            {examples.map((ex) => (
-              <option key={ex.name} value={ex.name}>
-                {ex.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex gap-2">
-          <button
-            onClick={testSelector}
-            className="py-2 px-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
-          >
-            <FiSearch /> 测试选择器
-          </button>
-          <button
-            onClick={clearAll}
-            className="py-2 px-4 flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md transition-colors"
-          >
-            <FiTrash2 /> 清空
-          </button>
-        </div>
-      </div>
-
-      {/* 输入区域 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            HTML内容
-          </label>
-          <textarea
-            value={html}
-            onChange={(e) => setHtml(e.target.value)}
-            className="w-full h-60 p-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
-            placeholder="<div class=&quot;example&quot;>输入HTML内容...</div>"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            CSS选择器
-          </label>
-          <input
-            type="text"
-            value={selector}
-            onChange={(e) => setSelector(e.target.value)}
-            className="w-full p-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm mb-4"
-            placeholder=".example > p"
-          />
-
-          {error && (
-            <div className="mt-2 p-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md text-red-700 dark:text-red-300 text-sm">
-              <div className="flex items-start">
-                <FiInfo className="mt-0.5 mr-2 flex-shrink-0" />
-                <span>{error}</span>
+    <div className="w-full max-w-7xl mx-auto">
+      <div className="flex flex-col gap-8">
+        {/* 控制面板 */}
+        <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 shadow-xl rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-2xl">
+          <div className="backdrop-blur-sm backdrop-filter bg-white/70 dark:bg-gray-800/70 p-6">
+            {/* 标题区 */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl text-white shadow-md">
+                <FiCode className="h-6 w-6" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">CSS选择器测试</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  测试CSS选择器并提取匹配元素的信息
+                </p>
               </div>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* 结果区域 */}
-      <div className="flex-1 overflow-auto">
-        <div className="border border-gray-300 dark:border-gray-700 rounded-md">
-          <div className="bg-gray-100 dark:bg-gray-800 p-3 border-b border-gray-300 dark:border-gray-700">
-            <h3 className="font-medium text-gray-700 dark:text-gray-300">
-              匹配结果 ({matchedElements.length})
-            </h3>
+            {/* 示例选择 */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                选择示例
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedExample}
+                  onChange={(e) => setSelectedExample(e.target.value)}
+                  className="w-full py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:text-white text-sm transition-colors"
+                >
+                  <option value="">-- 选择示例 --</option>
+                  {examples.map((ex) => (
+                    <option key={ex.name} value={ex.name}>
+                      {ex.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* 输入区域 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    HTML内容
+                  </label>
+                  <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                    <FiFile className="h-3 w-3" />
+                    <span>输入HTML代码</span>
+                  </div>
+                </div>
+                <div className="relative">
+                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/10 dark:to-purple-900/10 opacity-20 rounded-xl pointer-events-none"></div>
+                  <textarea
+                    value={html}
+                    onChange={(e) => setHtml(e.target.value)}
+                    className="w-full h-60 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-inner focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:text-white font-mono text-sm resize-none transition-all"
+                    placeholder="<div class=&quot;example&quot;>输入HTML内容...</div>"
+                    spellCheck="false"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    CSS选择器
+                  </label>
+                  <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                    <FiCode className="h-3 w-3" />
+                    <span>输入选择器</span>
+                  </div>
+                </div>
+                <div className="relative mb-4">
+                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/10 dark:to-purple-900/10 opacity-20 rounded-xl pointer-events-none"></div>
+                  <input
+                    type="text"
+                    value={selector}
+                    onChange={(e) => setSelector(e.target.value)}
+                    className="w-full py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-inner focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:text-white font-mono text-sm"
+                    placeholder=".example > p"
+                  />
+                </div>
+
+                {error && (
+                  <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm mb-4">
+                    <div className="flex items-start">
+                      <FiInfo className="h-5 w-5 mt-0.5 mr-2 flex-shrink-0" />
+                      <span>{error}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 选择器提示 */}
+                <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-xl mb-4">
+                  <h4 className="text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-2">常用选择器示例</h4>
+                  <ul className="text-xs text-indigo-600 dark:text-indigo-400 space-y-1.5">
+                    <li><code className="bg-indigo-100 dark:bg-indigo-800/30 px-1.5 py-0.5 rounded">.class</code> - 选择所有class属性的元素</li>
+                    <li><code className="bg-indigo-100 dark:bg-indigo-800/30 px-1.5 py-0.5 rounded">#id</code> - 选择特定id的元素</li>
+                    <li><code className="bg-indigo-100 dark:bg-indigo-800/30 px-1.5 py-0.5 rounded">div &gt; p</code> - 选择div的直接子p元素</li>
+                  </ul>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={testSelector}
+                    className="flex-1 py-3 px-4 flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all"
+                  >
+                    <FiSearch className="h-4 w-4" /> 测试选择器
+                  </button>
+                  <button
+                    onClick={clearAll}
+                    className="py-3 px-4 flex items-center justify-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-xl shadow-md hover:shadow-lg transition-all"
+                  >
+                    <FiTrash2 className="h-4 w-4" /> 清空
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
 
-          {matchedElements.length > 0 ? (
-            <div className="divide-y divide-gray-300 dark:divide-gray-700">
-              {matchedElements.map((element, index) => (
-                <div key={index} className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      元素 #{index + 1}
-                    </span>
-                    <div className="flex gap-2">
+        {/* 结果区域 */}
+        {matchedElements.length > 0 && (
+          <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 shadow-xl rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 transition-all duration-300">
+            <div className="backdrop-blur-sm backdrop-filter bg-white/70 dark:bg-gray-800/70 p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl text-white shadow-md">
+                  <FiCheckSquare className="h-6 w-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">匹配结果</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    找到 {matchedElements.length} 个匹配元素
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                {matchedElements.map((element, index) => (
+                  <div key={index} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-xs font-medium py-1 px-2.5 rounded-full">
+                          元素 #{index + 1}
+                        </span>
+                      </div>
                       <button
                         onClick={() => copyToClipboard(element.html, index)}
-                        className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-full transition-all duration-200"
                         title="复制HTML"
                       >
                         {copiedIndex === index ? (
-                          <span className="text-green-500 text-xs">已复制!</span>
+                          <>
+                            <FiCheck className="h-3 w-3" /> 已复制
+                          </>
                         ) : (
-                          <FiCopy size={16} />
+                          <>
+                            <FiCopy className="h-3 w-3" /> 复制HTML
+                          </>
                         )}
                       </button>
                     </div>
-                  </div>
 
-                  <div className="mb-3">
-                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      HTML
-                    </div>
-                    <pre className="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md overflow-x-auto text-xs text-gray-800 dark:text-gray-200 font-mono">
-                      {element.html}
-                    </pre>
-                  </div>
-
-                  <div className="mb-3">
-                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      文本内容
-                    </div>
-                    <pre className="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md overflow-x-auto text-xs text-gray-800 dark:text-gray-200">
-                      {element.text || <em className="text-gray-400">空文本</em>}
-                    </pre>
-                  </div>
-
-                  <div>
-                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      属性
-                    </div>
-                    {Object.keys(element.attributes).length > 0 ? (
-                      <div className="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md overflow-x-auto">
-                        <table className="w-full text-xs">
-                          <thead>
-                            <tr className="border-b border-gray-200 dark:border-gray-800">
-                              <th className="text-left py-1 px-2 font-medium text-gray-700 dark:text-gray-300">名称</th>
-                              <th className="text-left py-1 px-2 font-medium text-gray-700 dark:text-gray-300">值</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Object.entries(element.attributes).map(([key, value]) => (
-                              <tr key={key} className="border-b border-gray-200 dark:border-gray-800">
-                                <td className="py-1 px-2 font-mono text-gray-800 dark:text-gray-200">{key}</td>
-                                <td className="py-1 px-2 text-gray-700 dark:text-gray-300">{value}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                    <div className="p-4 space-y-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <FiFile className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">HTML</h4>
+                        </div>
+                        <div className="relative overflow-hidden rounded-xl">
+                          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-teal-50 to-green-50 dark:from-teal-900/10 dark:to-green-900/10 opacity-10 pointer-events-none"></div>
+                          <pre className="p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-x-auto text-xs text-gray-800 dark:text-gray-200 font-mono shadow-inner max-h-40">
+                            {element.html}
+                          </pre>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md text-xs text-gray-500">
-                        无属性
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              {error ? '无匹配结果' : '输入HTML和选择器，然后点击"测试选择器"按钮'}
-            </div>
-          )}
-        </div>
-      </div>
 
-      {/* 参考指南 */}
-      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
-        <details className="group">
-          <summary className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
-            <span className="mr-2">CSS选择器参考</span>
-            <svg className="w-5 h-5 transition-transform group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-          <div className="mt-3 text-sm space-y-3 text-gray-600 dark:text-gray-400">
-            <p>以下是一些常用的CSS选择器：</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <table className="min-w-full text-xs">
-                  <thead>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <th className="py-1 px-2 text-left font-medium text-gray-700 dark:text-gray-300">选择器</th>
-                      <th className="py-1 px-2 text-left font-medium text-gray-700 dark:text-gray-300">描述</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <td className="py-1 px-2 font-mono">element</td>
-                      <td className="py-1 px-2">选择所有指定元素</td>
-                    </tr>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <td className="py-1 px-2 font-mono">.class</td>
-                      <td className="py-1 px-2">选择具有指定类的元素</td>
-                    </tr>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <td className="py-1 px-2 font-mono">#id</td>
-                      <td className="py-1 px-2">选择具有指定ID的元素</td>
-                    </tr>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <td className="py-1 px-2 font-mono">[attribute]</td>
-                      <td className="py-1 px-2">选择具有指定属性的元素</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div>
-                <table className="min-w-full text-xs">
-                  <thead>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <th className="py-1 px-2 text-left font-medium text-gray-700 dark:text-gray-300">组合器</th>
-                      <th className="py-1 px-2 text-left font-medium text-gray-700 dark:text-gray-300">描述</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <td className="py-1 px-2 font-mono">E F</td>
-                      <td className="py-1 px-2">E元素的所有F后代元素</td>
-                    </tr>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <td className="py-1 px-2 font-mono">E > F</td>
-                      <td className="py-1 px-2">E元素的直接子元素F</td>
-                    </tr>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <td className="py-1 px-2 font-mono">E + F</td>
-                      <td className="py-1 px-2">E元素之后的相邻F元素</td>
-                    </tr>
-                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                      <td className="py-1 px-2 font-mono">E ~ F</td>
-                      <td className="py-1 px-2">E元素之后的所有同级F元素</td>
-                    </tr>
-                  </tbody>
-                </table>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <FiDatabase className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">文本内容</h4>
+                          </div>
+                          <div className="relative overflow-hidden rounded-xl">
+                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-900/50 opacity-20 pointer-events-none"></div>
+                            <pre className="p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-x-auto text-xs text-gray-800 dark:text-gray-200 shadow-inner max-h-32">
+                              {element.text || <em className="text-gray-400">空文本</em>}
+                            </pre>
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <FiInfo className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">属性</h4>
+                          </div>
+                          {Object.keys(element.attributes).length > 0 ? (
+                            <div className="relative overflow-hidden rounded-xl">
+                              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-900/50 opacity-20 pointer-events-none"></div>
+                              <div className="p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-x-auto shadow-inner max-h-32">
+                                <table className="w-full text-xs">
+                                  <thead>
+                                    <tr className="border-b border-gray-200 dark:border-gray-800">
+                                      <th className="text-left py-2 px-3 font-medium text-gray-700 dark:text-gray-300">名称</th>
+                                      <th className="text-left py-2 px-3 font-medium text-gray-700 dark:text-gray-300">值</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                                    {Object.entries(element.attributes).map(([key, value]) => (
+                                      <tr key={key}>
+                                        <td className="py-2 px-3 text-gray-800 dark:text-gray-200 font-mono">{key}</td>
+                                        <td className="py-2 px-3 text-gray-600 dark:text-gray-400 font-mono">{value}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-center text-gray-500 dark:text-gray-400 text-sm">
+                              无属性
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </details>
+        )}
       </div>
     </div>
   );
 };
 
-// 工具配置
 const tool: Tool = {
   id: 'css-selector',
   name: 'CSS选择器测试',
-  category: 'web',
   description: '测试CSS选择器并提取匹配元素的信息',
-  component: CssSelectorTester,
+  category: 'web',
   icon: FiCode,
+  component: CssSelectorTester,
   meta: {
-    keywords: ['css', 'selector', 'html', 'dom', '选择器', '爬虫', '提取']
+    keywords: ['css', 'selector', 'test', 'query', 'html', 'dom', 'extract'],
+    examples: [
+      '.class > p',
+      '#id',
+      'div[attribute=value]',
+    ],
+    version: '1.0.0'
   }
 };
 

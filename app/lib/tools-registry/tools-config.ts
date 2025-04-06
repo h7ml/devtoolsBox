@@ -2,7 +2,7 @@
  * 工具配置文件
  * 
  * 由脚本自动生成，请勿手动修改
- * 生成时间: 2025-04-06T08:32:41.402Z
+ * 生成时间: 2025-04-06T12:52:45.116Z
  */
 import { ToolCategory } from './types';
 
@@ -17,6 +17,11 @@ export interface ToolConfig {
  */
 export const toolConfigs: ToolConfig[] = [
   // 开发辅助工具
+  {
+    id: 'curl-converter',
+    category: 'dev',
+    importPath: () => import('../../tools/dev/curl-converter')
+  },
   {
     id: 'regex-tester',
     category: 'dev',
