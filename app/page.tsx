@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiSearch, FiStar, FiPackage, FiBook, FiTrendingUp } from 'react-icons/fi';
+import { FiSearch, FiStar, FiPackage, FiBook, FiTrendingUp, FiChevronRight } from 'react-icons/fi';
 import ToolCard from './components/ToolCard';
 import { useFavorites } from './hooks/useFavorites';
 import NavBar from './components/NavBar';
@@ -114,24 +114,24 @@ export default function Home() {
         {/* 搜索区域 */}
         <div className="px-4 py-16 flex items-center justify-center bg-gradient-to-b from-white to-gray-100 dark:from-gray-800 dark:to-gray-900">
           <div className="max-w-3xl w-full text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-600">
               寻找强大的开发工具
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               一站式工具集，提升您的开发效率
             </p>
 
-            <form onSubmit={handleSearch} className="relative max-w-xl mx-auto mb-8">
+            <form onSubmit={handleSearch} className="relative max-w-xl mx-auto mb-8 group">
               <input
                 type="text"
-                className="w-full px-5 py-4 pl-12 text-base rounded-lg shadow-sm bg-white dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-5 py-4 pl-12 text-base rounded-xl shadow-lg backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 dark:text-white border border-gray-200/80 dark:border-gray-700/80 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all group-hover:shadow-xl"
                 placeholder="搜索工具..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                className="absolute right-2 top-2 px-4 py-2 text-sm font-medium text-white bg-orange-500 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                className="absolute right-2 top-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 shadow-md transition-all transform hover:translate-y-[-1px]"
                 disabled={searchQuery.trim() === ''}
               >
                 搜索
@@ -162,9 +162,15 @@ export default function Home() {
             {favoriteTools.length > 0 && (
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">我的收藏</h2>
-                  <Link href="/tools" className="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300">
-                    查看全部
+                  <div className="flex items-center">
+                    <div className="p-2 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-600 mr-3 text-white shadow-md">
+                      <FiStar className="h-5 w-5" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">我的收藏</h2>
+                  </div>
+                  <Link href="/tools" className="flex items-center group text-orange-500 hover:text-orange-600 transition-colors">
+                    <span className="mr-1">查看全部</span>
+                    <FiChevronRight className="h-4 w-4 transform group-hover:translate-x-0.5 transition-transform" />
                   </Link>
                 </div>
 
@@ -184,7 +190,16 @@ export default function Home() {
             {/* 热门工具 */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">热门工具</h2>
+                <div className="flex items-center">
+                  <div className="p-2 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 mr-3 text-white shadow-md">
+                    <FiTrendingUp className="h-5 w-5" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">热门工具</h2>
+                </div>
+                <Link href="/tools" className="flex items-center group text-orange-500 hover:text-orange-600 transition-colors">
+                  <span className="mr-1">查看全部</span>
+                  <FiChevronRight className="h-4 w-4 transform group-hover:translate-x-0.5 transition-transform" />
+                </Link>
               </div>
 
               {popularTools.length > 0 ? (
@@ -199,7 +214,7 @@ export default function Home() {
                   ))}
                 </div>
               ) : (
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-8 text-center">
+                <div className="rounded-2xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-100/80 dark:border-gray-700/80 backdrop-blur-sm shadow-lg p-8 text-center">
                   <p className="text-gray-500 dark:text-gray-400">
                     暂无热门工具，请先添加工具
                   </p>
@@ -216,17 +231,20 @@ export default function Home() {
                   <Link
                     key={category.id}
                     href={`/tools?category=${category.id}`}
-                    className="group block p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                    className="group block relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-100/80 dark:border-gray-700/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                   >
-                    <div className={`inline-flex items-center justify-center p-3 rounded-lg ${categoryColorMap[category.id]?.bg || 'bg-gray-50'} mb-4`}>
-                      <category.icon className={`h-6 w-6 ${categoryColorMap[category.id]?.text || 'text-gray-500'}`} />
+                    <div className="p-6 backdrop-filter backdrop-blur-sm bg-white/70 dark:bg-gray-800/70">
+                      <div className={`inline-flex items-center justify-center p-3.5 rounded-xl mb-4 bg-gradient-to-r ${categoryColorMap[category.id]?.bg || 'bg-gray-50'}`}>
+                        <category.icon className={`h-6 w-6 ${categoryColorMap[category.id]?.text || 'text-gray-500'}`} />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 group-hover:text-orange-500 transition-colors">
+                        {category.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {category.description}
+                      </p>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 group-hover:text-orange-500">
-                      {category.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {category.description}
-                    </p>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-orange-500/10 dark:to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                   </Link>
                 ))}
               </div>
@@ -235,9 +253,14 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="bg-white dark:bg-gray-800 py-12 mt-8">
+      <footer className="bg-white dark:bg-gray-800 py-12 mt-8 border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
+            <div className="inline-flex items-center justify-center mb-6">
+              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-600">
+                DevTools Box
+              </span>
+            </div>
             <p className="text-gray-500 dark:text-gray-400">
               &copy; {new Date().getFullYear()} DevTools Box. 一站式开发工具集合.
             </p>
