@@ -6,9 +6,10 @@ import { registerAllTools, getToolsByCategory } from '../../lib/tools-registry/r
 import { Tool, ToolCategory } from '../../lib/tools-registry/types';
 import NavBar from '../../components/NavBar';
 import Link from 'next/link';
-import { FiSearch, FiArrowLeft, FiBox, FiChevronRight, FiHome } from 'react-icons/fi';
+import { FiSearch, FiArrowLeft, FiBox, FiChevronRight, FiHome, FiGrid, FiPackage } from 'react-icons/fi';
 import { useFavorites } from '../../hooks/useFavorites';
 import ToolCard from '../../components/ToolCard';
+import { Card, CardHeader, Input, Button } from '../../components/design-system';
 
 // 分类名称映射
 const categoryNameMap: Record<string, string> = {
@@ -93,7 +94,7 @@ export default function CategoryPage() {
             <div className="flex items-center">
               <Link
                 href="/tools"
-                className="mr-4 p-2 rounded-full bg-white dark:bg-gray-800 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-100 dark:border-gray-700"
+                className="mr-4 p-2.5 rounded-full bg-white dark:bg-gray-800 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-100 dark:border-gray-700"
                 aria-label="返回"
               >
                 <FiArrowLeft className="h-5 w-5 text-gray-500 dark:text-gray-400" />
@@ -102,7 +103,7 @@ export default function CategoryPage() {
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {categoryDisplayName}
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
                   浏览所有{categoryDisplayName}
                 </p>
               </div>
@@ -114,20 +115,14 @@ export default function CategoryPage() {
       {/* 搜索框 */}
       <div className="pt-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-lg mx-auto">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FiSearch className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              className="block w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
-                     bg-white dark:bg-gray-800 dark:text-white
-                     shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder={`搜索${categoryDisplayName}...`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <Input
+            icon={<FiSearch className="h-5 w-5" />}
+            placeholder={`搜索${categoryDisplayName}...`}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="shadow-md"
+            gradient
+          />
         </div>
       </div>
 
@@ -135,19 +130,24 @@ export default function CategoryPage() {
         <div className="max-w-7xl mx-auto">
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
             </div>
           ) : initError ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <p className="text-red-500 text-xl mb-2">初始化失败</p>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">{initError}</p>
-              <button
+            <Card className="mx-auto max-w-md mt-12">
+              <CardHeader
+                icon={<FiPackage className="h-6 w-6" />}
+                title="初始化失败"
+                description={initError}
+                gradientColors="from-red-500 to-pink-600"
+              />
+              <Button
                 onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                gradient
+                fullWidth
               >
                 刷新页面
-              </button>
-            </div>
+              </Button>
+            </Card>
           ) : (
             <>
               {filteredTools().length > 0 ? (
@@ -162,22 +162,27 @@ export default function CategoryPage() {
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <p className="text-gray-500 dark:text-gray-400 text-xl mb-2">未找到工具</p>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    {searchTerm.trim() !== ''
-                      ? `没有与"${searchTerm}"匹配的${categoryDisplayName}`
-                      : `此分类下暂无工具`}
-                  </p>
+                <Card className="mx-auto max-w-md mt-12">
+                  <CardHeader
+                    icon={<FiGrid className="h-6 w-6" />}
+                    title="未找到工具"
+                    description={
+                      searchTerm.trim() !== ''
+                        ? `没有与"${searchTerm}"匹配的${categoryDisplayName}`
+                        : `此分类下暂无工具`
+                    }
+                    gradientColors="from-amber-500 to-orange-600"
+                  />
                   {searchTerm.trim() !== '' && (
-                    <button
+                    <Button
                       onClick={() => setSearchTerm('')}
-                      className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                      gradient
+                      fullWidth
                     >
                       清除搜索
-                    </button>
+                    </Button>
                   )}
-                </div>
+                </Card>
               )}
             </>
           )}
