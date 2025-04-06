@@ -4,22 +4,13 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { registerAllTools, getToolsByCategory } from '../../lib/tools-registry/register-tools';
 import { Tool, ToolCategory } from '../../lib/tools-registry/types';
+import { categoryNameMap } from '../../lib/tools-registry/categories';
 import NavBar from '../../components/NavBar';
 import Link from 'next/link';
 import { FiSearch, FiArrowLeft, FiBox, FiChevronRight, FiHome, FiGrid, FiPackage } from 'react-icons/fi';
 import { useFavorites } from '../../hooks/useFavorites';
 import ToolCard from '../../components/ToolCard';
 import { Card, CardHeader, Input, Button } from '../../components/design-system';
-
-// 分类名称映射
-const categoryNameMap: Record<string, string> = {
-  'text': '文本工具',
-  'json': 'JSON工具',
-  'dev': '开发辅助',
-  'runtime': '在线执行',
-  'web': '爬虫工具',
-  'misc': '其它工具',
-};
 
 export default function CategoryPage() {
   const params = useParams();

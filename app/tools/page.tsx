@@ -6,10 +6,9 @@ import { registerAllTools, getAllTools, getToolsByCategory } from '../lib/tools-
 import { Tool, ToolCategory } from '../lib/tools-registry/types';
 import NavBar from '../components/NavBar';
 import Link from 'next/link';
-import { FiSearch, FiArrowLeft, FiStar, FiGrid, FiPackage } from 'react-icons/fi';
+import { FiSearch, FiArrowLeft, FiStar } from 'react-icons/fi';
 import { useFavorites } from '../hooks/useFavorites';
 import ToolCard from '../components/ToolCard';
-import { Card, CardHeader, Input, Button } from '../components/design-system';
 
 // 定义工具分类颜色映射
 const categoryColorMap: Record<string, string> = {
@@ -112,35 +111,33 @@ export default function ToolListPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NavBar />
 
-      {/* 磨砂玻璃效果标题栏 */}
-      <div className="pt-16 pb-8 backdrop-blur-md bg-white/80 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="pt-16 pb-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <div className="flex items-center mb-6">
             <Link
               href="/"
-              className="mr-4 p-2.5 bg-white dark:bg-gray-800 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors rounded-full border border-gray-100 dark:border-gray-700"
+              className="mr-4 p-2 rounded-full bg-white dark:bg-gray-800 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <FiArrowLeft className="h-5 w-5 text-gray-500 dark:text-gray-400" />
             </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {categoryParam ? categoryNameMap[categoryParam] || categoryParam : '所有工具'}
-              </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                浏览并使用各种实用开发工具
-              </p>
-            </div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {categoryParam ? categoryNameMap[categoryParam] || categoryParam : '所有工具'}
+            </h1>
           </div>
 
           {/* 搜索框 */}
-          <div className="max-w-lg mx-auto">
-            <Input
-              icon={<FiSearch className="h-5 w-5" />}
+          <div className="relative max-w-lg mx-auto mb-8">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FiSearch className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              className="block w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+                     bg-white dark:bg-gray-800 dark:text-white
+                     shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="搜索工具..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="shadow-md"
-              gradient
             />
           </div>
         </div>
@@ -148,24 +145,19 @@ export default function ToolListPage() {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : initError ? (
-        <Card className="mx-auto max-w-md mt-12">
-          <CardHeader
-            icon={<FiPackage className="h-6 w-6" />}
-            title="初始化失败"
-            description={initError}
-            gradientColors="from-red-500 to-pink-600"
-          />
-          <Button
+        <div className="flex flex-col items-center justify-center py-12">
+          <p className="text-red-500 text-xl mb-2">初始化失败</p>
+          <p className="text-gray-500 dark:text-gray-400 mb-4">{initError}</p>
+          <button
             onClick={() => window.location.reload()}
-            gradient
-            fullWidth
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
           >
             刷新页面
-          </Button>
-        </Card>
+          </button>
+        </div>
       ) : (
         <div className="px-4 pb-16">
           <div className="max-w-7xl mx-auto">
@@ -176,22 +168,14 @@ export default function ToolListPage() {
               return (
                 <div key={category} className="mb-10">
                   {!categoryParam && (
-                    <div className="sticky top-16 z-10 py-3 backdrop-blur-md bg-white/80 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700 mb-4">
-                      <div className="flex items-center">
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                          {categoryNameMap[category] || category}
-                        </h2>
-                        <Link
-                          href={`/tools?category=${category}`}
-                          className="ml-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
-                        >
-                          查看全部
-                        </Link>
-                      </div>
+                    <div className="flex items-center mb-4">
+                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                        {categoryNameMap[category] || category}
+                      </h2>
                     </div>
                   )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {categoryTools.map(tool => (
                       <ToolCard
                         key={tool.id}
@@ -206,21 +190,12 @@ export default function ToolListPage() {
             })}
 
             {filteredTools().length === 0 && (
-              <Card className="mx-auto max-w-md mt-12">
-                <CardHeader
-                  icon={<FiGrid className="h-6 w-6" />}
-                  title="未找到工具"
-                  description="尝试其他搜索词或浏览所有工具"
-                  gradientColors="from-amber-500 to-orange-600"
-                />
-                <Button
-                  onClick={() => setSearchTerm('')}
-                  gradient
-                  fullWidth
-                >
-                  清除搜索
-                </Button>
-              </Card>
+              <div className="flex flex-col items-center justify-center py-12">
+                <p className="text-gray-500 dark:text-gray-400 text-xl mb-2">未找到工具</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  尝试其他搜索词或浏览所有工具
+                </p>
+              </div>
             )}
           </div>
         </div>

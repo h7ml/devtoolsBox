@@ -56,52 +56,52 @@ const NavBar = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
       ? 'bg-white/85 dark:bg-gray-900/85 backdrop-blur-md shadow-md'
-      : 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm'
-      } border-b border-gray-100 dark:border-gray-800`}>
+      : 'bg-white dark:bg-gray-900'
+      }`}>
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <span className="text-xl font-bold text-gray-900 dark:text-white">
-                工具<span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">盒子</span>
+                工具<span className="text-orange-500">盒子</span>
               </span>
             </Link>
             <div className="hidden md:block ml-10">
               <div className="flex items-baseline space-x-4">
                 <Link
                   href="/"
-                  className={`text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium relative transition-colors group ${pathname === '/' ? 'text-indigo-600 dark:text-indigo-400' : ''
+                  className={`text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium relative transition-colors group ${pathname === '/' ? 'text-orange-500 dark:text-orange-500' : ''
                     }`}
                 >
                   首页
-                  <span className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 ${pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'
                     }`}></span>
                 </Link>
                 <Link
                   href="/tools"
-                  className={`text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium relative transition-colors group ${pathname === '/tools' ? 'text-indigo-600 dark:text-indigo-400' : ''
+                  className={`text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium relative transition-colors group ${pathname === '/tools' ? 'text-orange-500 dark:text-orange-500' : ''
                     }`}
                 >
                   全部工具
-                  <span className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 ${pathname === '/tools' ? 'w-full' : 'w-0 group-hover:w-full'
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${pathname === '/tools' ? 'w-full' : 'w-0 group-hover:w-full'
                     }`}></span>
                 </Link>
                 <Link
                   href="/dashboard"
-                  className={`text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium relative transition-colors group ${pathname === '/dashboard' ? 'text-indigo-600 dark:text-indigo-400' : ''
+                  className={`text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium relative transition-colors group ${pathname === '/dashboard' ? 'text-orange-500 dark:text-orange-500' : ''
                     }`}
                 >
                   我的工具箱
-                  <span className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 ${pathname === '/dashboard' ? 'w-full' : 'w-0 group-hover:w-full'
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${pathname === '/dashboard' ? 'w-full' : 'w-0 group-hover:w-full'
                     }`}></span>
                 </Link>
                 <Link
                   href="/about"
-                  className={`text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium relative transition-colors group ${pathname === '/about' ? 'text-indigo-600 dark:text-indigo-400' : ''
+                  className={`text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium relative transition-colors group ${pathname === '/about' ? 'text-orange-500 dark:text-orange-500' : ''
                     }`}
                 >
                   关于
-                  <span className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 ${pathname === '/about' ? 'w-full' : 'w-0 group-hover:w-full'
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${pathname === '/about' ? 'w-full' : 'w-0 group-hover:w-full'
                     }`}></span>
                 </Link>
               </div>
@@ -124,7 +124,7 @@ const NavBar = () => {
               {isLoggedIn ? (
                 <Link
                   href="/auth/profile"
-                  className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none transition-colors"
+                  className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none transition-colors"
                 >
                   <FiUser className="mr-2 -ml-1 h-4 w-4" />
                   个人中心
@@ -132,7 +132,7 @@ const NavBar = () => {
               ) : (
                 <Link
                   href="/auth/login"
-                  className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none transition-colors"
+                  className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none transition-colors"
                 >
                   <FiUser className="mr-2 -ml-1 h-4 w-4" />
                   登录/注册
@@ -153,7 +153,7 @@ const NavBar = () => {
           <div className="flex md:hidden">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 backdrop-blur-sm focus:outline-none transition-colors"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 backdrop-blur-sm focus:outline-none transition-colors"
               aria-expanded="false"
             >
               <span className="sr-only">打开菜单</span>
@@ -174,8 +174,8 @@ const NavBar = () => {
               href="/"
               onClick={toggleMenu}
               className={`block px-3 py-2 rounded-md text-sm font-medium ${pathname === '/'
-                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-900/10'
-                : 'text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
+                ? 'text-orange-500 dark:text-orange-500 bg-orange-50/80 dark:bg-orange-900/10'
+                : 'text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
                 } transition-colors`}
             >
               首页
@@ -184,8 +184,8 @@ const NavBar = () => {
               href="/tools"
               onClick={toggleMenu}
               className={`block px-3 py-2 rounded-md text-sm font-medium ${pathname === '/tools'
-                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-900/10'
-                : 'text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
+                ? 'text-orange-500 dark:text-orange-500 bg-orange-50/80 dark:bg-orange-900/10'
+                : 'text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
                 } transition-colors`}
             >
               全部工具
@@ -194,8 +194,8 @@ const NavBar = () => {
               href="/dashboard"
               onClick={toggleMenu}
               className={`block px-3 py-2 rounded-md text-sm font-medium ${pathname === '/dashboard'
-                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-900/10'
-                : 'text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
+                ? 'text-orange-500 dark:text-orange-500 bg-orange-50/80 dark:bg-orange-900/10'
+                : 'text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
                 } transition-colors`}
             >
               我的工具箱
@@ -204,8 +204,8 @@ const NavBar = () => {
               href="/about"
               onClick={toggleMenu}
               className={`block px-3 py-2 rounded-md text-sm font-medium ${pathname === '/about'
-                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-900/10'
-                : 'text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
+                ? 'text-orange-500 dark:text-orange-500 bg-orange-50/80 dark:bg-orange-900/10'
+                : 'text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
                 } transition-colors`}
             >
               关于
@@ -215,7 +215,7 @@ const NavBar = () => {
               <Link
                 href="/auth/profile"
                 onClick={toggleMenu}
-                className="block px-3 py-2 rounded-md text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors"
+                className="block px-3 py-2 rounded-md text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors"
               >
                 个人中心
               </Link>
@@ -223,7 +223,7 @@ const NavBar = () => {
               <Link
                 href="/auth/login"
                 onClick={toggleMenu}
-                className="block px-3 py-2 rounded-md text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors"
+                className="block px-3 py-2 rounded-md text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors"
               >
                 登录/注册
               </Link>
@@ -245,7 +245,7 @@ const NavBar = () => {
                 href="https://github.com/h7ml/devtoolsBox"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none transition-colors"
+                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none transition-colors"
                 onClick={toggleMenu}
               >
                 <FiGithub className="mr-2 -ml-1 h-4 w-4" />

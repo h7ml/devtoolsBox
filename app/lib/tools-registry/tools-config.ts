@@ -2,7 +2,7 @@
  * 工具配置文件
  * 
  * 由脚本自动生成，请勿手动修改
- * 生成时间: 2025-04-06T12:52:45.116Z
+ * 生成时间: 2025-04-06T15:08:50.456Z
  */
 import { ToolCategory } from './types';
 
@@ -47,6 +47,46 @@ export const toolConfigs: ToolConfig[] = [
 
   // 其他工具
   {
+    id: 'color-converter',
+    category: 'misc',
+    importPath: () => import('../../tools/conversion/color-converter')
+  },
+  {
+    id: 'encryption-decryption',
+    category: 'misc',
+    importPath: () => import('../../tools/crypto/encryption-decryption')
+  },
+  {
+    id: 'time-converter',
+    category: 'misc',
+    importPath: () => import('../../tools/datetime/time-converter')
+  },
+  {
+    id: 'url-codec',
+    category: 'misc',
+    importPath: () => import('../../tools/encoding/url-codec')
+  },
+  {
+    id: 'diff-checker',
+    category: 'misc',
+    importPath: () => import('../../tools/format/diff-checker')
+  },
+  {
+    id: 'html-formatter',
+    category: 'misc',
+    importPath: () => import('../../tools/formatter/html-formatter')
+  },
+  {
+    id: 'json-formatter',
+    category: 'misc',
+    importPath: () => import('../../tools/formatter/json-formatter')
+  },
+  {
+    id: 'expression-evaluator',
+    category: 'misc',
+    importPath: () => import('../../tools/math/expression-evaluator')
+  },
+  {
     id: 'password-generator',
     category: 'misc',
     importPath: () => import('../../tools/other/password-generator')
@@ -57,6 +97,11 @@ export const toolConfigs: ToolConfig[] = [
     id: 'base64',
     category: 'text',
     importPath: () => import('../../tools/text/base64')
+  },
+  {
+    id: 'case-converter',
+    category: 'text',
+    importPath: () => import('../../tools/text/case-converter')
   },
   {
     id: 'url-encoder',

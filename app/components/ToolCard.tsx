@@ -1,17 +1,9 @@
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FiStar } from 'react-icons/fi';
 import { Tool } from '../lib/tools-registry/types';
 import { Card } from './design-system';
-
-// 定义工具分类颜色映射
-const categoryColorMap: Record<string, string> = {
-  'text': 'from-blue-500 to-blue-600',
-  'json': 'from-green-500 to-teal-600',
-  'dev': 'from-indigo-500 to-purple-600',
-  'runtime': 'from-orange-500 to-amber-600',
-  'web': 'from-teal-500 to-emerald-600',
-  'misc': 'from-gray-500 to-gray-600',
-};
+import { categoryColorMap } from '../lib/tools-registry/categories';
 
 interface ToolCardProps {
   tool: Tool;
@@ -20,6 +12,13 @@ interface ToolCardProps {
 }
 
 export default function ToolCard({ tool, isFavorite, onToggleFavorite }: ToolCardProps) {
+  const router = useRouter();
+
+  // 处理卡片点击
+  const handleCardClick = () => {
+    router.push(`/tools/${tool.category}/${tool.id}`);
+  };
+
   // 处理收藏按钮点击，阻止事件冒泡
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -28,19 +27,10 @@ export default function ToolCard({ tool, isFavorite, onToggleFavorite }: ToolCar
   };
 
   return (
-    <div className="relative group">
-      {/* 整个卡片的链接 */}
-      <Link
-        href={`/tools/${tool.category}/${tool.id}`}
-        className="absolute inset-0 z-0"
-        aria-label={`打开${tool.name}工具`}
-      >
-        <span className="sr-only">打开{tool.name}工具</span>
-      </Link>
-
+    <div className="relative group cursor-pointer" onClick={handleCardClick}>
       {/* 卡片内容 */}
       <Card className="h-full transform transition-transform duration-300 group-hover:translate-y-[-3px]">
-        <div className="pointer-events-none">
+        <div>
           <div className="flex items-center mb-3">
             <div className={`p-2.5 rounded-xl bg-gradient-to-r ${categoryColorMap[tool.category] || categoryColorMap['misc']} mr-3 text-white shadow-md`}>
               <tool.icon className="h-5 w-5" />
