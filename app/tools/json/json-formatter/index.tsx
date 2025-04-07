@@ -1,23 +1,42 @@
 'use client';
 
 import { useState, ChangeEvent } from 'react';
-import { FiCopy, FiTrash2, FiDownload, FiUpload } from 'react-icons/fi';
+import { FiCopy, FiTrash2, FiDownload, FiUpload, FiCode } from 'react-icons/fi';
 import { Tool } from '../../../lib/tools-registry/types';
-import { FiCode } from 'react-icons/fi';
+import { useToolState } from '../../../hooks/useToolState';
+
+// 工具状态类型
+interface JsonFormatterState {
+  input: string;
+  output: string;
+  error: string | null;
+  indentSize: number;
+}
 
 const JsonFormatter = () => {
-  const [input, setInput] = useState<string>('');
-  const [output, setOutput] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
-  const [indentSize, setIndentSize] = useState<number>(2);
+  // 使用 useToolState 持久化工具状态
+  const [state, setState, resetState] = useToolState<JsonFormatterState>({
+    toolId: 'json-formatter',
+    initialState: {
+      input: '',
+      output: '',
+      error: null,
+      indentSize: 2
+    }
+  });
+
+  const { input, output, error, indentSize } = state;
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    setInput(value);
 
     if (!value.trim()) {
-      setOutput('');
-      setError(null);
+      setState({
+        ...state,
+        input: value,
+        output: '',
+        error: null
+      });
       return;
     }
 
@@ -26,29 +45,54 @@ const JsonFormatter = () => {
       const parsedJson = JSON.parse(value);
       // 格式化 JSON 对象
       const formatted = JSON.stringify(parsedJson, null, indentSize);
-      setOutput(formatted);
-      setError(null);
+      setState({
+        ...state,
+        input: value,
+        output: formatted,
+        error: null
+      });
     } catch (err) {
-      setError(`JSON 解析错误: ${(err as Error).message}`);
-      setOutput('');
+      setState({
+        ...state,
+        input: value,
+        output: '',
+        error: `JSON 解析错误: ${(err as Error).message}`
+      });
     }
   };
 
   const handleIndentSizeChange = (size: number) => {
-    setIndentSize(size);
     if (input.trim()) {
       try {
         const parsedJson = JSON.parse(input);
         const formatted = JSON.stringify(parsedJson, null, size);
-        setOutput(formatted);
-        setError(null);
+        setState({
+          ...state,
+          indentSize: size,
+          output: formatted,
+          error: null
+        });
       } catch (err) {
         // 如果之前已经有错误，不需要重新设置错误
         if (!error) {
-          setError(`JSON 解析错误: ${(err as Error).message}`);
-          setOutput('');
+          setState({
+            ...state,
+            indentSize: size,
+            output: '',
+            error: `JSON 解析错误: ${(err as Error).message}`
+          });
+        } else {
+          setState({
+            ...state,
+            indentSize: size
+          });
         }
       }
+    } else {
+      setState({
+        ...state,
+        indentSize: size
+      });
     }
   };
 
@@ -57,19 +101,23 @@ const JsonFormatter = () => {
       try {
         const parsedJson = JSON.parse(input);
         const minified = JSON.stringify(parsedJson);
-        setOutput(minified);
-        setError(null);
+        setState({
+          ...state,
+          output: minified,
+          error: null
+        });
       } catch (err) {
-        setError(`JSON 解析错误: ${(err as Error).message}`);
-        setOutput('');
+        setState({
+          ...state,
+          output: '',
+          error: `JSON 解析错误: ${(err as Error).message}`
+        });
       }
     }
   };
 
   const clearInput = () => {
-    setInput('');
-    setOutput('');
-    setError(null);
+    resetState();
   };
 
   const copyToClipboard = async (text: string) => {
@@ -110,16 +158,23 @@ const JsonFormatter = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target?.result as string;
-      setInput(content);
 
       try {
         const parsedJson = JSON.parse(content);
         const formatted = JSON.stringify(parsedJson, null, indentSize);
-        setOutput(formatted);
-        setError(null);
+        setState({
+          ...state,
+          input: content,
+          output: formatted,
+          error: null
+        });
       } catch (err) {
-        setError(`JSON 解析错误: ${(err as Error).message}`);
-        setOutput('');
+        setState({
+          ...state,
+          input: content,
+          output: '',
+          error: `JSON 解析错误: ${(err as Error).message}`
+        });
       }
     };
     reader.readAsText(file);
@@ -264,19 +319,16 @@ const JsonFormatter = () => {
   );
 };
 
+// 工具定义
 const tool: Tool = {
   id: 'json-formatter',
   name: 'JSON 格式化',
-  description: '美化、压缩或验证您的 JSON 数据',
+  description: '美化、压缩和验证 JSON 数据',
   category: 'json',
-  icon: FiCode,
   component: JsonFormatter,
+  icon: FiCode,
   meta: {
-    keywords: ['json', '格式化', '美化', '验证', '压缩'],
-    examples: [
-      '{"name":"DevToolsBox","version":"1.0.0"}',
-      '{"users":[{"id":1,"name":"用户1"},{"id":2,"name":"用户2"}]}'
-    ]
+    keywords: ['json', '格式化', '美化', '压缩', '验证', 'json formatter', 'json validator'],
   }
 };
 

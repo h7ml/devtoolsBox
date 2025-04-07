@@ -27,6 +27,7 @@
     "mathjs": "^14.4.0",
     "nanoid": "^5.1.5",
     "next": "14.0.4",
+    "next-auth": "^4.24.11",
     "next-themes": "^0.2.1",
     "prettier": "^3.5.3",
     "prismjs": "^1.30.0",

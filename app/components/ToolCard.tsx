@@ -1,66 +1,101 @@
+'use client';
+
+import { memo, useMemo, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FiStar } from 'react-icons/fi';
 import { Tool } from '../lib/tools-registry/types';
-import { Card } from './design-system/Card';
-import { categoryBadgeColorMap } from '../lib/tools-registry/categories';
 
-interface ToolCardProps {
+export interface ToolCardProps {
   tool: Tool;
-  isFavorite: boolean;
-  onToggleFavorite: () => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
 }
 
-export default function ToolCard({ tool, isFavorite, onToggleFavorite }: ToolCardProps) {
+// 使用 React.memo 避免不必要的重渲染
+const ToolCard = memo(({ tool, isFavorite = false, onToggleFavorite }: ToolCardProps) => {
   const router = useRouter();
+  const [isHovering, setIsHovering] = useState(false);
 
-  // 处理卡片点击
-  const handleCardClick = () => {
-    router.push(`/tools/${tool.category}/${tool.id}`);
-  };
+  // 使用 useCallback 缓存事件处理函数
+  const handleMouseEnter = useCallback(() => {
+    setIsHovering(true);
+  }, []);
 
-  // 处理收藏按钮点击，阻止事件冒泡
-  const handleFavoriteClick = (e: React.MouseEvent) => {
+  const handleMouseLeave = useCallback(() => {
+    setIsHovering(false);
+  }, []);
+
+  // 使用 useCallback 避免每次渲染都创建新函数
+  const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onToggleFavorite();
-  };
+
+    if (onToggleFavorite) {
+      onToggleFavorite();
+    }
+  }, [onToggleFavorite]);
+
+  // 使用 useMemo 缓存样式和颜色计算
+  const categoryColorClass = useMemo(() => {
+    const colorMap: Record<string, string> = {
+      dev: 'bg-purple-500',
+      text: 'bg-blue-500',
+      web: 'bg-teal-500',
+      json: 'bg-amber-500',
+      misc: 'bg-gray-500',
+      formatter: 'bg-green-500',
+      crypto: 'bg-red-500',
+      conversion: 'bg-cyan-500',
+      encoding: 'bg-violet-500',
+      datetime: 'bg-yellow-500',
+      math: 'bg-orange-500',
+    };
+
+    return colorMap[tool.category] || 'bg-gray-500';
+  }, [tool.category]);
+
+  // 使用 useMemo 计算卡片样式
+  const cardStyle = useMemo(() => ({
+    transform: isHovering ? 'translateY(-4px)' : 'translateY(0)',
+    boxShadow: isHovering
+      ? '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+      : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+  }), [isHovering]);
 
   return (
-    <div
-      className="relative group cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
-      onClick={handleCardClick}
+    <Link
+      href={`/tools/${tool.category}/${tool.id}`}
+      className="block"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      {/* 卡片内容 */}
-      <div className="rounded-2xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-100/80 dark:border-gray-700/80 overflow-hidden shadow-lg hover:shadow-xl transition-all h-[140px]">
-        <div className="p-5 backdrop-filter backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 h-full flex flex-col">
-          <div className="flex items-center mb-3">
-            <div className={`flex-shrink-0 p-2.5 rounded-xl bg-gradient-to-r ${categoryBadgeColorMap[tool.category] || 'from-gray-500 to-gray-600'} mr-3 text-white shadow-md`}>
-              <tool.icon className="h-5 w-5" />
-            </div>
-            <h3 className="font-medium text-gray-900 dark:text-white line-clamp-1">{tool.name}</h3>
+      <div
+        className="relative rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-5 h-full transition-all duration-300"
+        style={cardStyle}
+      >
+        <div className="flex items-start justify-between mb-4">
+          <div className={`p-2 rounded-lg ${categoryColorClass} text-white`}>
+            <tool.icon className="w-5 h-5" />
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 flex-grow">
-            {tool.description}
-          </p>
+          <button
+            onClick={handleFavoriteClick}
+            className={`text-lg ${isFavorite ? 'text-yellow-500' : 'text-gray-400 dark:text-gray-600'} hover:text-yellow-500 transition-colors`}
+            aria-label={isFavorite ? "从收藏中移除" : "添加到收藏"}
+          >
+            <FiStar className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+          </button>
         </div>
 
-        {/* 底部指示条 */}
-        <div className="h-1 w-full bg-gradient-to-r from-transparent via-orange-400 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-      </div>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{tool.name}</h3>
 
-      {/* 收藏按钮 */}
-      <button
-        onClick={handleFavoriteClick}
-        className={`absolute top-3 right-3 p-1.5 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-md focus:outline-none z-20 transition-all duration-200 
-          ${isFavorite
-            ? 'text-yellow-500 hover:text-yellow-600 scale-110'
-            : 'text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 opacity-0 group-hover:opacity-100 group-hover:scale-110'
-          }`}
-        title={isFavorite ? '取消收藏' : '添加到收藏'}
-      >
-        <FiStar className="w-4 h-4" fill={isFavorite ? 'currentColor' : 'none'} />
-      </button>
-    </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{tool.description}</p>
+      </div>
+    </Link>
   );
-} 
+});
+
+// 为组件添加显示名称，方便调试
+ToolCard.displayName = 'ToolCard';
+
+export default ToolCard; 

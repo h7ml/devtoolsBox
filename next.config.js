@@ -18,9 +18,9 @@ const nextConfig = {
     return config;
   },
   // 禁用SWC
-  // swcMinify: false,
+  swcMinify: process.env.NODE_ENV === 'development' ? false : true, // 开发环境禁用SWC，生产环境使用默认配置
   // 指定需要编译的包
   transpilePackages: ['next/font/google'],
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;

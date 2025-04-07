@@ -8,6 +8,8 @@ import { ToolAutoRegistrar } from './auto-register';
 
 // 已注册的工具集合
 const registeredTools = new Map<string, Tool>();
+// 工具加载状态缓存
+const toolLoadingPromises = new Map<string, Promise<Tool>>();
 
 // 标记是否已经注册过工具
 let isRegistered = false;
@@ -81,6 +83,67 @@ export async function registerAllTools(): Promise<void> {
   registrationPromise = null;
   
   return;
+}
+
+/**
+ * 懒加载单个工具
+ * 优化性能，只在需要使用时才加载
+ */
+export async function lazyLoadTool(toolId: string): Promise<Tool | undefined> {
+  // 如果工具已注册，直接返回
+  if (registeredTools.has(toolId)) {
+    return registeredTools.get(toolId);
+  }
+  
+  // 如果工具正在加载中，复用现有的Promise
+  if (toolLoadingPromises.has(toolId)) {
+    return toolLoadingPromises.get(toolId);
+  }
+  
+  console.log(`懒加载工具: ${toolId}`);
+  
+  // 从配置中获取工具导入路径
+  const { getToolConfigById } = await import('./tools-config');
+  const toolConfig = getToolConfigById(toolId);
+  
+  if (!toolConfig) {
+    console.error(`找不到工具配置: ${toolId}`);
+    return undefined;
+  }
+  
+  // 创建加载Promise
+  const loadPromise = (async () => {
+    try {
+      const module = await toolConfig.importPath();
+      
+      if (!module.default) {
+        throw new Error('工具模块未提供默认导出');
+      }
+      
+      const tool = module.default;
+      
+      // 确保工具具有正确的类别
+      if (!tool.category) {
+        tool.category = toolConfig.category;
+      }
+      
+      // 注册工具
+      registerTool(tool);
+      console.log(`✅ 懒加载成功: ${tool.name} (${tool.id})`);
+      
+      return tool;
+    } catch (error) {
+      console.error(`❌ 懒加载失败: ${toolId}`, error);
+      // 移除失败的加载Promise，允许下次重试
+      toolLoadingPromises.delete(toolId);
+      throw error;
+    }
+  })();
+  
+  // 保存加载Promise
+  toolLoadingPromises.set(toolId, loadPromise);
+  
+  return loadPromise;
 }
 
 /**
