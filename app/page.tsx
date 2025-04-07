@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { FiSearch, FiStar, FiPackage, FiBook, FiTrendingUp, FiChevronRight } from 'react-icons/fi';
 import ToolCard from './components/ToolCard';
 import { useFavorites } from './hooks/useFavorites';
-import NavBar from './components/NavBar';
+import NavBarWithModals from './components/NavBarWithModals';
 import { registerAllTools, getAllTools, getPopularTools } from './lib/tools-registry/register-tools';
 import { Tool } from './lib/tools-registry/types';
 
@@ -108,7 +108,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavBar />
+      <NavBarWithModals />
 
       <main className="pt-16 pb-8">
         {/* 搜索区域 */}

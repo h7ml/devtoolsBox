@@ -3,11 +3,18 @@
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { FiUser, FiLogOut } from 'react-icons/fi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useModalContext } from '../../contexts/ModalContext';
 
 export default function AuthStatus() {
   const { data: session, status } = useSession();
+  const { openModal } = useModalContext();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -17,24 +24,31 @@ export default function AuthStatus() {
     await signOut({ callbackUrl: '/' });
   };
 
-  if (status === 'loading') {
+  const handleOpenLoginModal = () => {
+    openModal('login');
+  };
+
+  // 在挂载前或加载中时显示加载占位符
+  if (!mounted || status === 'loading') {
     return (
       <div className="animate-pulse rounded-full h-8 w-20 bg-gray-200 dark:bg-gray-700"></div>
     );
   }
 
+  // 未认证状态
   if (status === 'unauthenticated') {
     return (
-      <Link
-        href="/auth/login"
+      <button
+        onClick={handleOpenLoginModal}
         className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none transition-colors"
       >
         <FiUser className="mr-2 -ml-1 h-4 w-4" />
         登录/注册
-      </Link>
+      </button>
     );
   }
 
+  // 已认证状态
   return (
     <div className="relative">
       <button
