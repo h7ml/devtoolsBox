@@ -6,10 +6,13 @@ import { registerAllTools, getAllTools, getToolsByCategory } from '../lib/tools-
 import { Tool, ToolCategory } from '../lib/tools-registry/types';
 import NavBarWithModals from '../components/NavBarWithModals';
 import Link from 'next/link';
-import { FiSearch, FiArrowLeft, FiStar } from 'react-icons/fi';
+import { FiSearch, FiArrowLeft, FiStar, FiGrid, FiList, FiTag, FiFilter } from 'react-icons/fi';
 import { useFavorites } from '../hooks/useFavorites';
 import ToolCard from '../components/ToolCard';
 import { categoryNameMap } from '../lib/tools-registry/categories';
+import StructuredData from '../components/StructuredData';
+import { generateBreadcrumbStructuredData } from '../components/dynamicSEO';
+
 export default function ToolListPage() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
@@ -19,6 +22,7 @@ export default function ToolListPage() {
   const [categories, setCategories] = useState<string[]>([]);
   const { isFavorite, toggleFavorite } = useFavorites();
   const [initError, setInitError] = useState<string | null>(null);
+  const [breadcrumbData, setBreadcrumbData] = useState(null);
 
   // 只在初始化和分类参数变化时加载工具
   useEffect(() => {
@@ -53,6 +57,23 @@ export default function ToolListPage() {
 
     loadTools();
   }, [categoryParam]); // 仅依赖分类参数
+
+  // 生成面包屑结构化数据
+  useEffect(() => {
+    const category = searchParams?.get('category');
+    if (category) {
+      setBreadcrumbData(generateBreadcrumbStructuredData([
+        { name: '首页', item: '/' },
+        { name: '工具', item: '/tools' },
+        { name: categoryNameMap[category] || category, item: `/tools?category=${category}` }
+      ]));
+    } else {
+      setBreadcrumbData(generateBreadcrumbStructuredData([
+        { name: '首页', item: '/' },
+        { name: '全部工具', item: '/tools' }
+      ]));
+    }
+  }, [searchParams]);
 
   // 过滤工具
   const filteredTools = useCallback(() => {
@@ -91,7 +112,10 @@ export default function ToolListPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NavBarWithModals />
 
-      <div className="pt-16 pb-8 px-4 sm:px-6 lg:px-8">
+      {/* 添加结构化数据 */}
+      {breadcrumbData && <StructuredData data={breadcrumbData} />}
+
+      <main className="container mx-auto px-4 py-8 pt-24">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center mb-6">
             <Link
@@ -121,7 +145,7 @@ export default function ToolListPage() {
             />
           </div>
         </div>
-      </div>
+      </main>
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
