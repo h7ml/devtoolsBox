@@ -1,12 +1,12 @@
 'use client';
 
 import { FiGithub, FiCode, FiPackage, FiStar, FiUsers, FiHeart } from 'react-icons/fi';
-import NavBar from '../components/NavBar';
+import NavBarWithModals from '../components/NavBarWithModals';
 
 export default function About() {
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavBar />
+      <NavBarWithModals />
 
       <div className="max-w-5xl mx-auto pt-28 px-4 pb-16 sm:px-6 lg:px-8">
         <div className="text-center mb-12">

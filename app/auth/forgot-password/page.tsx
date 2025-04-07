@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { FiMail, FiAlertCircle, FiCheck, FiArrowLeft } from 'react-icons/fi';
 import Link from 'next/link';
-import NavBar from '../../components/NavBar';
+import NavBarWithModals from '../../components/NavBarWithModals';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -40,7 +40,7 @@ export default function ForgotPassword() {
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavBar />
+      <NavBarWithModals />
 
       <div className="max-w-md mx-auto pt-28 px-4 pb-16 sm:px-6 lg:px-8">
         <div className="text-center mb-8">

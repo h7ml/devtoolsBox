@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, notFound } from 'next/navigation';
 import { registerAllTools, getToolById, getRelatedTools } from '../../../lib/tools-registry/register-tools';
 import { Tool } from '../../../lib/tools-registry/types';
-import NavBar from '../../../components/NavBar';
+import NavBarWithModals from '../../../components/NavBarWithModals';
 import ToolCard from '../../../components/ToolCard';
 import { FiArrowLeft, FiStar, FiHome, FiChevronRight, FiBox, FiClock, FiInfo } from 'react-icons/fi';
 import Link from 'next/link';
@@ -76,7 +76,7 @@ export default function ToolPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <NavBar />
+        <NavBarWithModals />
         <div className="pt-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* 骨架屏 - 工具标题 */}
@@ -111,7 +111,7 @@ export default function ToolPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavBar />
+      <NavBarWithModals />
 
       {/* 导航头部 - 采用磨砂玻璃效果 */}
       <motion.div
@@ -175,8 +175,8 @@ export default function ToolPage() {
                 onClick={handleToggleFavorite}
                 whileTap={{ scale: 0.95 }}
                 className={`p-2 rounded-full focus:outline-none transition-all duration-200 border shadow-md hover:shadow-lg hover:scale-105 ${tool && isFavorite(tool.id)
-                    ? 'text-yellow-500 hover:text-yellow-600 border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20'
-                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800'
+                  ? 'text-yellow-500 hover:text-yellow-600 border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800'
                   }`}
                 title={tool && isFavorite(tool.id) ? '取消收藏' : '添加到收藏'}
               >

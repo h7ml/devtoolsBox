@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import NavBar from './NavBar';
+import NavBarWithModals from './NavBarWithModals';
 
 interface AnimatedLayoutProps {
   children: React.ReactNode;
@@ -16,17 +16,17 @@ const AnimatedLayout: React.FC<AnimatedLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavBar />
-      
+      <NavBarWithModals />
+
       <AnimatePresence mode="wait">
         <motion.main
           key={pathname}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          transition={{ 
+          transition={{
             duration: 0.3,
-            ease: [0.25, 0.1, 0.25, 1.0] 
+            ease: [0.25, 0.1, 0.25, 1.0]
           }}
           className="pt-16 pb-8"
         >

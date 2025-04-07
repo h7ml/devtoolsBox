@@ -5,7 +5,7 @@ import {
   FiUser, FiMail, FiLock, FiEdit, FiAlertCircle,
   FiCheck, FiSave, FiStar, FiBarChart2, FiClock, FiSettings
 } from 'react-icons/fi';
-import NavBar from '../../components/NavBar';
+import NavBarWithModals from '../../components/NavBarWithModals';
 import Link from 'next/link';
 
 interface UserProfile {
@@ -126,7 +126,7 @@ export default function Profile() {
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <NavBar />
+        <NavBarWithModals />
         <div className="pt-24 flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
         </div>
@@ -136,7 +136,7 @@ export default function Profile() {
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavBar />
+      <NavBarWithModals />
 
       <div className="max-w-6xl mx-auto pt-24 px-4 pb-16 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8">

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FiHome, FiArrowLeft, FiSearch } from 'react-icons/fi';
-import NavBar from './components/NavBar';
+import NavBarWithModals from './components/NavBarWithModals';
 
 export default function NotFound() {
   // 动画变量
@@ -24,7 +24,7 @@ export default function NotFound() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <NavBar />
+      <NavBarWithModals />
 
       <div className="flex-grow flex items-center justify-center p-4">
         <motion.div

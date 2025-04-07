@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { registerAllTools, getAllTools, getToolsByCategory } from '../lib/tools-registry/register-tools';
 import { Tool, ToolCategory } from '../lib/tools-registry/types';
-import NavBar from '../components/NavBar';
+import NavBarWithModals from '../components/NavBarWithModals';
 import Link from 'next/link';
 import { FiSearch, FiArrowLeft, FiStar } from 'react-icons/fi';
 import { useFavorites } from '../hooks/useFavorites';
@@ -89,7 +89,7 @@ export default function ToolListPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavBar />
+      <NavBarWithModals />
 
       <div className="pt-16 pb-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">

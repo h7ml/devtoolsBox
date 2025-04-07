@@ -6,7 +6,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { SessionProvider } from 'next-auth/react';
 import { ModalProvider } from './contexts/ModalContext';
 import ModalManager from './components/modals/ModalManager';
-import NavBar from './components/NavBar';
+import NavBarWithModals from './components/NavBarWithModals';
 
 export function Providers({ children }) {
   return (
@@ -15,7 +15,7 @@ export function Providers({ children }) {
         <CacheProvider>
           <ChakraProvider>
             <ModalProvider>
-              <NavBar />
+              <NavBarWithModals />
               <ModalManager />
               {children}
             </ModalProvider>
