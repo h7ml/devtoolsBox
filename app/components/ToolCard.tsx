@@ -32,20 +32,20 @@ export default function ToolCard({ tool, isFavorite, onToggleFavorite }: ToolCar
       onClick={handleCardClick}
     >
       {/* 卡片内容 */}
-      <div className="rounded-2xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-100/80 dark:border-gray-700/80 overflow-hidden shadow-lg hover:shadow-xl transition-all">
-        <div className="p-5 backdrop-filter backdrop-blur-sm bg-white/70 dark:bg-gray-800/70">
+      <div className="rounded-2xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-100/80 dark:border-gray-700/80 overflow-hidden shadow-lg hover:shadow-xl transition-all h-[140px]">
+        <div className="p-5 backdrop-filter backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 h-full flex flex-col">
           <div className="flex items-center mb-3">
             <div className={`flex-shrink-0 p-2.5 rounded-xl bg-gradient-to-r ${categoryBadgeColorMap[tool.category] || 'from-gray-500 to-gray-600'} mr-3 text-white shadow-md`}>
               <tool.icon className="h-5 w-5" />
             </div>
             <h3 className="font-medium text-gray-900 dark:text-white line-clamp-1">{tool.name}</h3>
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 flex-grow">
             {tool.description}
           </p>
         </div>
 
-        {/* 悬停时显示的底部指示条 */}
+        {/* 底部指示条 */}
         <div className="h-1 w-full bg-gradient-to-r from-transparent via-orange-400 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
       </div>
 

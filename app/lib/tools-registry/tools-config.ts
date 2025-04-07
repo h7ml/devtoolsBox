@@ -2,7 +2,7 @@
  * 工具配置文件
  * 
  * 由脚本自动生成，请勿手动修改
- * 生成时间: 2025-04-06T15:08:50.456Z
+ * 生成时间: 2025-04-07T01:19:32.707Z
  */
 import { ToolCategory } from './types';
 
@@ -40,9 +40,19 @@ export const toolConfigs: ToolConfig[] = [
 
   // JSON处理工具
   {
+    id: 'json-compare',
+    category: 'json',
+    importPath: () => import('../../tools/json/json-compare')
+  },
+  {
     id: 'json-formatter',
     category: 'json',
     importPath: () => import('../../tools/json/json-formatter')
+  },
+  {
+    id: 'json-to-types',
+    category: 'json',
+    importPath: () => import('../../tools/json/json-to-types')
   },
 
   // 其他工具
@@ -119,6 +129,11 @@ export const toolConfigs: ToolConfig[] = [
     id: 'http-request',
     category: 'web',
     importPath: () => import('../../tools/crawler/http-request')
+  },
+  {
+    id: 'url-params-extractor',
+    category: 'web',
+    importPath: () => import('../../tools/web/url-params-extractor')
   },
 ];
 

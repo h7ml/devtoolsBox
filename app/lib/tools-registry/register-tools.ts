@@ -12,6 +12,9 @@ const registeredTools = new Map<string, Tool>();
 // 标记是否已经注册过工具
 let isRegistered = false;
 
+// 添加一个Promise来跟踪注册过程
+let registrationPromise: Promise<void> | null = null;
+
 /**
  * 注册单个工具
  */
@@ -25,37 +28,59 @@ export function registerTool(tool: Tool): void {
 
 /**
  * 注册所有工具
+ * 优化注册过程，防止重复注册，提高性能
  */
 export async function registerAllTools(): Promise<void> {
-  // 避免重复注册
+  // 如果已经注册过，直接返回
   if (isRegistered) {
     console.log('工具已经注册过，跳过注册');
     return;
   }
   
-  console.log('开始注册工具...');
-  
-  try {
-    // 使用自动注册器
-    const autoRegistrar = new ToolAutoRegistrar();
-    const result = await autoRegistrar.scanAndRegisterTools();
-    
-    if (result.success) {
-      console.log(`自动注册成功，共注册了 ${result.registeredCount} 个工具`);
-      
-      if (result.failedTools.length > 0) {
-        console.warn(`${result.failedTools.length} 个工具自动注册失败`);
-      }
-    } else {
-      console.error('自动注册工具失败:', result.error);
-    }
-  } catch (error) {
-    console.error('自动注册发生错误:', error);
+  // 如果正在注册中，返回现有的Promise
+  if (registrationPromise) {
+    console.log('工具正在注册中，复用现有注册过程');
+    return registrationPromise;
   }
   
-  // 标记为已注册
-  isRegistered = true;
-  console.log(`工具注册完成，共注册了 ${registeredTools.size} 个工具`);
+  console.log('开始注册工具...');
+  
+  // 创建注册Promise并保存
+  registrationPromise = (async () => {
+    try {
+      // 使用自动注册器
+      const autoRegistrar = new ToolAutoRegistrar();
+      const result = await autoRegistrar.scanAndRegisterTools();
+      
+      if (result.success) {
+        console.log(`自动注册成功，共注册了 ${result.registeredCount} 个工具`);
+        
+        if (result.failedTools.length > 0) {
+          console.warn(`${result.failedTools.length} 个工具自动注册失败`);
+        }
+      } else {
+        console.error('自动注册工具失败:', result.error);
+      }
+    } catch (error) {
+      console.error('自动注册发生错误:', error);
+      // 出错时重置注册状态，允许下次重试
+      isRegistered = false;
+      registrationPromise = null;
+      throw error;
+    }
+    
+    // 标记为已注册
+    isRegistered = true;
+    console.log(`工具注册完成，共注册了 ${registeredTools.size} 个工具`);
+  })();
+  
+  // 等待注册完成
+  await registrationPromise;
+  
+  // 注册完成后清理Promise引用
+  registrationPromise = null;
+  
+  return;
 }
 
 /**
