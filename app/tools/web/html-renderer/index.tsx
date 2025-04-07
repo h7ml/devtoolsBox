@@ -285,9 +285,10 @@ const HtmlRendererComponent = () => {
 
               <iframe
                 ref={iframeRef}
+                sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+                frameBorder="0"
                 title="HTML预览"
                 className="w-full h-[calc(100%-2rem)] bg-white"
-                sandbox="allow-scripts allow-same-origin"
               />
             </div>
 
