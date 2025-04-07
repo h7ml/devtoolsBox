@@ -19,6 +19,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import BaseModal from './BaseModal';
 import { useModalContext } from '../../contexts/ModalContext';
+import { searchTools, getPopularTools, getAllTools } from '../../lib/tools-registry/register-tools';
+import { Tool } from '../../lib/tools-registry/types';
 
 interface SearchResult {
   id: string;
@@ -38,12 +40,34 @@ const SearchModal: React.FC<SearchModalProps> = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [toolsRegistered, setToolsRegistered] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const bgHover = useColorModeValue('gray.50', 'gray.700');
   const bgSelected = useColorModeValue('orange.50', 'orange.900');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
+
+  // 当模态框打开时自动注册工具
+  useEffect(() => {
+    if (isOpen && modalType === 'search' && !toolsRegistered) {
+      const registerTools = async () => {
+        setIsLoading(true);
+        try {
+          const { registerAllTools } = await import('../../lib/tools-registry/register-tools');
+          await registerAllTools();
+          setToolsRegistered(true);
+          console.log('工具注册已完成');
+        } catch (error) {
+          console.error('工具注册失败:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      registerTools();
+    }
+  }, [isOpen, modalType, toolsRegistered]);
 
   // 当模态框打开时，聚焦到搜索输入框
   useEffect(() => {
@@ -86,74 +110,29 @@ const SearchModal: React.FC<SearchModalProps> = () => {
   // 搜索逻辑
   useEffect(() => {
     const fetchResults = async () => {
-      if (!searchTerm.trim()) {
+      if (!searchTerm.trim() || !toolsRegistered) {
+        // 当搜索词为空或工具未注册时，不显示结果
         setResults([]);
         return;
       }
 
       setIsLoading(true);
       try {
-        // TODO: 替换为实际的API调用
-        // 模拟API请求延迟
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // 工具已在模态框打开时注册，直接使用搜索功能
+        const foundTools = searchTools(searchTerm);
 
-        // 模拟搜索结果数据
-        const mockResults: SearchResult[] = [
-          {
-            id: '1',
-            title: 'JSON格式化工具',
-            description: '格式化和验证JSON数据的在线工具',
-            category: '开发工具',
-            tags: ['JSON', '格式化', '验证'],
-            url: '/tools/json-formatter',
-            popularity: 95
-          },
-          {
-            id: '2',
-            title: 'Base64编解码工具',
-            description: '在线转换Base64编码和解码',
-            category: '编码工具',
-            tags: ['Base64', '编码', '解码'],
-            url: '/tools/base64',
-            popularity: 90
-          },
-          {
-            id: '3',
-            title: 'Markdown编辑器',
-            description: '所见即所得的Markdown编辑工具',
-            category: '文本工具',
-            tags: ['Markdown', '编辑器', '预览'],
-            url: '/tools/markdown-editor',
-            popularity: 85
-          },
-          {
-            id: '4',
-            title: '正则表达式测试器',
-            description: '测试和调试正则表达式的工具',
-            category: '开发工具',
-            tags: ['Regex', '测试', '匹配'],
-            url: '/tools/regex-tester',
-            popularity: 80
-          },
-          {
-            id: '5',
-            title: 'URL编解码工具',
-            description: 'URL编码和解码转换工具',
-            category: '编码工具',
-            tags: ['URL', '编码', '解码'],
-            url: '/tools/url-encoder',
-            popularity: 75
-          }
-        ];
+        // 将Tool对象转换为SearchResult格式
+        const searchResults: SearchResult[] = foundTools.map(tool => ({
+          id: tool.id,
+          title: tool.name,
+          description: tool.description,
+          category: tool.category,
+          tags: tool.meta.keywords || [],
+          url: `/tools/${tool.category}/${tool.id}`,
+          popularity: 0 // 暂时没有流行度数据
+        }));
 
-        // 根据搜索词过滤结果
-        const filteredResults = mockResults.filter(item =>
-          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
-
-        setResults(filteredResults);
+        setResults(searchResults);
       } catch (error) {
         console.error('Error fetching search results:', error);
         setResults([]);
@@ -164,7 +143,7 @@ const SearchModal: React.FC<SearchModalProps> = () => {
 
     const debounce = setTimeout(fetchResults, 300);
     return () => clearTimeout(debounce);
-  }, [searchTerm]);
+  }, [searchTerm, toolsRegistered]);
 
   const navigateToResult = (result: SearchResult) => {
     closeModal();
@@ -215,6 +194,53 @@ const SearchModal: React.FC<SearchModalProps> = () => {
       </Box>
     );
   };
+
+  // 获取热门工具，确保这个过程不会失败
+  const getHotTools = (): SearchResult[] => {
+    try {
+      const popularTools = getPopularTools(2);
+
+      if (!popularTools.length) {
+        // 备用工具数据，以防工具注册表为空
+        return [
+          {
+            id: "json-formatter",
+            title: "JSON格式化工具",
+            description: "格式化和验证JSON数据的在线工具",
+            category: "json",
+            tags: ["JSON", "格式化", "验证"],
+            url: "/tools/json/json-formatter",
+            popularity: 95
+          },
+          {
+            id: "regex-tester",
+            title: "正则表达式测试器",
+            description: "测试和调试正则表达式的工具",
+            category: "dev",
+            tags: ["Regex", "测试", "匹配"],
+            url: "/tools/dev/regex-tester",
+            popularity: 80
+          }
+        ];
+      }
+
+      return popularTools.map(tool => ({
+        id: tool.id,
+        title: tool.name,
+        description: tool.description,
+        category: tool.category,
+        tags: tool.meta.keywords || [],
+        url: `/tools/${tool.category}/${tool.id}`,
+        popularity: 0
+      }));
+    } catch (error) {
+      console.error('Error getting popular tools:', error);
+      // 出错时返回空数组
+      return [];
+    }
+  };
+
+  const hotTools = getHotTools();
 
   return (
     <BaseModal
@@ -282,36 +308,23 @@ const SearchModal: React.FC<SearchModalProps> = () => {
             <Box p={4}>
               <Text fontSize="sm" color="gray.500" mb={4}>热门工具</Text>
               <div className="space-y-2">
-                <Link href="/tools/json-formatter" onClick={closeModal}>
-                  <Flex
-                    p={2}
-                    borderRadius="md"
-                    _hover={{ bg: bgHover }}
-                    align="center"
-                    justify="space-between"
-                  >
-                    <Flex align="center">
-                      <FiStar className="text-yellow-400 mr-2" />
-                      <Text>JSON格式化工具</Text>
+                {hotTools.map(tool => (
+                  <Link key={tool.id} href={tool.url} onClick={closeModal}>
+                    <Flex
+                      p={2}
+                      borderRadius="md"
+                      _hover={{ bg: bgHover }}
+                      align="center"
+                      justify="space-between"
+                    >
+                      <Flex align="center">
+                        <FiStar className="text-yellow-400 mr-2" />
+                        <Text>{tool.title}</Text>
+                      </Flex>
+                      <FiArrowRight className="text-gray-400" />
                     </Flex>
-                    <FiArrowRight className="text-gray-400" />
-                  </Flex>
-                </Link>
-                <Link href="/tools/markdown-editor" onClick={closeModal}>
-                  <Flex
-                    p={2}
-                    borderRadius="md"
-                    _hover={{ bg: bgHover }}
-                    align="center"
-                    justify="space-between"
-                  >
-                    <Flex align="center">
-                      <FiHeart className="text-red-400 mr-2" />
-                      <Text>Markdown编辑器</Text>
-                    </Flex>
-                    <FiArrowRight className="text-gray-400" />
-                  </Flex>
-                </Link>
+                  </Link>
+                ))}
               </div>
             </Box>
           )}

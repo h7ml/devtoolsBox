@@ -276,7 +276,7 @@ const NavBarContent = () => {
                   </div>
                 </div>
                 <Link
-                  href="/profile"
+                  href="/auth/profile"
                   onClick={toggleMenu}
                   className="block px-3 py-2 rounded-md text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors"
                 >
