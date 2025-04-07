@@ -483,7 +483,7 @@ const JsonToSqlComponent: React.FC = () => {
               </Button>
 
               <Button
-                variant="default"
+                variant="primary"
                 size="sm"
                 icon={<FiPlay className="h-4 w-4" />}
                 onClick={convertToSql}

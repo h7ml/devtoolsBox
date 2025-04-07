@@ -35,6 +35,7 @@ const Button: React.FC<ButtonProps> = ({
     sm: 'py-1.5 px-3 text-xs',
     md: 'py-2.5 px-4 text-sm',
     lg: 'py-3 px-5 text-base',
+    xl: 'py-4 px-6 text-lg',
   };
 
   // 圆角样式

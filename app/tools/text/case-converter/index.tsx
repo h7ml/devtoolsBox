@@ -274,7 +274,9 @@ const CaseConverter = () => {
                               ? <FiCheck className="h-3 w-3" />
                               : <FiCopy className="h-3 w-3" />
                           }
-                        />
+                        >
+                          复制
+                        </Button>
                       </div>
                       <div className="bg-gray-50 dark:bg-gray-800 rounded-md p-2 text-xs font-mono text-gray-800 dark:text-gray-200 h-14 overflow-auto">
                         {outputs[type as CaseType] || (

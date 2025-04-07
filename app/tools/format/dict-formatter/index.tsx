@@ -349,7 +349,6 @@ const DictFormatterComponent: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         icon={<FiUpload className="h-4 w-4" />}
-                        as="span"
                       >
                         从文件加载
                       </Button>

@@ -29,7 +29,7 @@ const CurlToRequestsComponent: React.FC = () => {
   const [formatOption, setFormatOption] = useState<FormatOption>('requests');
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
-  
+
   // 解析cURL命令
   const parseCurl = (curlCommand: string) => {
     // 初始化参数
@@ -45,10 +45,10 @@ const CurlToRequestsComponent: React.FC = () => {
       hasMultipart: false,
       hasUrlencoded: false,
     };
-    
+
     // 预处理: 删除续行符 \，合并多行
     let processedCommand = curlCommand.replace(/\\\n\s*/g, ' ').trim();
-    
+
     // 如果命令不以curl开头，检查并添加
     if (!processedCommand.toLowerCase().startsWith('curl')) {
       processedCommand = `curl ${processedCommand}`;
@@ -59,30 +59,31 @@ const CurlToRequestsComponent: React.FC = () => {
     if (urlMatch && urlMatch.index !== undefined && urlMatch.index > processedCommand.toLowerCase().indexOf('curl')) {
       result.url = urlMatch[1] || urlMatch[2] || urlMatch[3];
     }
-    
+
     // 检查请求方法
     if (processedCommand.includes(' -X ') || processedCommand.includes(' --request ')) {
       const methodMatch = processedCommand.match(/-X\s+(\w+)|--request\s+(\w+)/);
       if (methodMatch) {
         result.method = (methodMatch[1] || methodMatch[2]).toUpperCase();
       }
-    } else if (processedCommand.includes(' -d ') || 
-               processedCommand.includes(' --data ') || 
-               processedCommand.includes(' --data-binary ')) {
+    } else if (processedCommand.includes(' -d ') ||
+      processedCommand.includes(' --data ') ||
+      processedCommand.includes(' --data-binary ')) {
       // 如果没有指定方法但有数据，默认为POST
       result.method = 'POST';
     }
-    
+
     // 提取headers
-    const headerMatches = [...processedCommand.matchAll(/-H\s+['"]([^'"]+)['"]|--header\s+['"]([^'"]+)['"]/g)];
-    for (const match of headerMatches) {
+    const headerRegex = /-H\s+['"]([^'"]+)['"]|--header\s+['"]([^'"]+)['"]/g;
+    let match;
+    while ((match = headerRegex.exec(processedCommand)) !== null) {
       const headerStr = match[1] || match[2];
       const separatorIndex = headerStr.indexOf(':');
       if (separatorIndex > 0) {
         const key = headerStr.substring(0, separatorIndex).trim();
         const value = headerStr.substring(separatorIndex + 1).trim();
         result.headers[key] = value;
-        
+
         // 检查内容类型
         if (key.toLowerCase() === 'content-type') {
           if (value.includes('application/json')) {
@@ -95,12 +96,12 @@ const CurlToRequestsComponent: React.FC = () => {
         }
       }
     }
-    
+
     // 提取数据
     const dataMatch = processedCommand.match(/-d\s+['"]([^'"]+)['"]|--data\s+['"]([^'"]+)['"]|--data-binary\s+['"]([^'"]+)['"]/);
     if (dataMatch) {
       result.data = dataMatch[1] || dataMatch[2] || dataMatch[3];
-      
+
       // 如果没有明确的Content-Type但数据看起来像JSON
       if (!result.hasJson && !result.hasMultipart && !result.hasUrlencoded) {
         if (result.data.trim().startsWith('{') && result.data.trim().endsWith('}')) {
@@ -108,19 +109,19 @@ const CurlToRequestsComponent: React.FC = () => {
         }
       }
     }
-    
+
     // 提取URL参数
     try {
       const urlObj = new URL(result.url);
-      for (const [key, value] of urlObj.searchParams.entries()) {
+      urlObj.searchParams.forEach((value, key) => {
         result.params[key] = value;
-      }
+      });
       // 更新URL，移除参数
       result.url = `${urlObj.origin}${urlObj.pathname}`;
     } catch (e) {
       // URL解析失败，使用原始URL
     }
-    
+
     // 检查basic auth
     const userPassMatch = processedCommand.match(/-u\s+['"]([^'"]+)['"]|--user\s+['"]([^'"]+)['"]/);
     if (userPassMatch) {
@@ -130,17 +131,17 @@ const CurlToRequestsComponent: React.FC = () => {
         result.auth = { username, password: password || '' };
       }
     }
-    
+
     return result;
   };
-  
+
   // 生成requests代码
   const generateRequestsCode = (parsedCurl: ReturnType<typeof parseCurl>): string => {
     let code = '';
     const isSimple = formatOption === 'requests';
     const isSession = formatOption === 'requests_session';
     const hasComments = formatOption === 'requests_with_comments';
-    
+
     // 导入语句
     if (hasComments) {
       code += '# -*- coding: utf-8 -*-\n';
@@ -148,19 +149,19 @@ const CurlToRequestsComponent: React.FC = () => {
       code += input.split('\n').map(line => '# ' + line).join('\n');
       code += '\n"""\n\n';
     }
-    
+
     code += 'import requests\n';
     if (parsedCurl.hasJson) {
       code += 'import json\n';
     }
     code += '\n';
-    
+
     // URL
     if (hasComments) {
       code += '# 请求URL\n';
     }
     code += `url = "${parsedCurl.url}"\n\n`;
-    
+
     // 请求头
     if (Object.keys(parsedCurl.headers).length > 0) {
       if (hasComments) {
@@ -172,7 +173,7 @@ const CurlToRequestsComponent: React.FC = () => {
       }
       code += '}\n\n';
     }
-    
+
     // URL参数
     if (Object.keys(parsedCurl.params).length > 0) {
       if (hasComments) {
@@ -184,13 +185,13 @@ const CurlToRequestsComponent: React.FC = () => {
       }
       code += '}\n\n';
     }
-    
+
     // 请求数据
     if (parsedCurl.data) {
       if (hasComments) {
         code += '# 请求数据\n';
       }
-      
+
       if (parsedCurl.hasJson) {
         try {
           // 尝试格式化JSON
@@ -212,14 +213,14 @@ const CurlToRequestsComponent: React.FC = () => {
         code += `data = '${parsedCurl.data}'\n\n`;
       }
     }
-    
+
     // Session或直接请求
     if (isSession) {
       if (hasComments) {
         code += '# 创建会话对象\n';
       }
       code += 'session = requests.Session()\n';
-      
+
       // 设置基本认证
       if (parsedCurl.auth) {
         if (hasComments) {
@@ -227,12 +228,12 @@ const CurlToRequestsComponent: React.FC = () => {
         }
         code += `session.auth = ("${parsedCurl.auth.username}", "${parsedCurl.auth.password}")\n`;
       }
-      
+
       // 发送请求
       if (hasComments) {
         code += '\n# 发送请求\n';
       }
-      
+
       code += 'response = session.';
     } else {
       if (hasComments) {
@@ -240,19 +241,19 @@ const CurlToRequestsComponent: React.FC = () => {
       }
       code += 'response = requests.';
     }
-    
+
     // 请求方法和参数
     code += parsedCurl.method.toLowerCase() + '(\n';
     code += `    url,\n`;
-    
+
     if (Object.keys(parsedCurl.headers).length > 0) {
       code += '    headers=headers,\n';
     }
-    
+
     if (Object.keys(parsedCurl.params).length > 0) {
       code += '    params=params,\n';
     }
-    
+
     if (parsedCurl.data) {
       if (parsedCurl.hasJson) {
         code += '    json=data,\n';
@@ -260,19 +261,19 @@ const CurlToRequestsComponent: React.FC = () => {
         code += '    data=data,\n';
       }
     }
-    
+
     if (parsedCurl.auth && isSimple) {
       code += `    auth=("${parsedCurl.auth.username}", "${parsedCurl.auth.password}"),\n`;
     }
-    
+
     code += ')\n\n';
-    
+
     // 响应处理
     if (hasComments) {
       code += '# 处理响应\n';
     }
     code += 'print(f"Status code: {response.status_code}")\n';
-    
+
     if (parsedCurl.hasJson || parsedCurl.headers['Accept']?.includes('application/json')) {
       if (hasComments) {
         code += '# 尝试解析JSON响应\n';
@@ -288,28 +289,28 @@ const CurlToRequestsComponent: React.FC = () => {
     } else {
       code += 'print(response.text)\n';
     }
-    
+
     return code;
   };
-  
+
   // 转换cURL命令
   const convertCurl = () => {
     setError(null);
-    
+
     try {
       const parsedCurl = parseCurl(input);
-      
+
       if (!parsedCurl.url) {
         throw new Error('无法解析URL，请检查cURL命令格式');
       }
-      
+
       const requestsCode = generateRequestsCode(parsedCurl);
       setOutput(requestsCode);
     } catch (e) {
       setError(`转换错误: ${e.message}`);
     }
   };
-  
+
   // 复制结果
   const handleCopy = () => {
     navigator.clipboard.writeText(output);
@@ -317,36 +318,36 @@ const CurlToRequestsComponent: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
     toast.success('已复制到剪贴板');
   };
-  
+
   // 格式化cURL命令
   const formatCurl = () => {
     try {
       // 简单格式化: 删除多余空格，整理续行符
       const lines = input.split('\n').map(line => line.trim());
       let formatted = '';
-      
+
       for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
-        
+
         // 如果不是最后一行，并且没有续行符，添加续行符
         if (i < lines.length - 1 && !line.endsWith('\\')) {
           line += ' \\';
         }
-        
+
         // 如果是最后一行，并且有续行符，移除续行符
         if (i === lines.length - 1 && line.endsWith('\\')) {
           line = line.slice(0, -1).trim();
         }
-        
+
         formatted += line + '\n';
       }
-      
+
       setInput(formatted.trim());
     } catch (e) {
       setError(`格式化错误: ${e.message}`);
     }
   };
-  
+
   return (
     <Card className="w-full">
       <CardHeader
@@ -412,7 +413,7 @@ const CurlToRequestsComponent: React.FC = () => {
 
           <div className="lg:col-span-2 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
             <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">转换选项</h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-xs text-gray-600 dark:text-gray-400 mb-2">
@@ -420,12 +421,12 @@ const CurlToRequestsComponent: React.FC = () => {
                 </label>
                 <div className="space-y-3">
                   {FORMAT_OPTIONS.map((option) => (
-                    <label 
+                    <label
                       key={option.id}
                       className={`
                         flex items-center p-2 rounded-md cursor-pointer
-                        ${formatOption === option.id 
-                          ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700' 
+                        ${formatOption === option.id
+                          ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700'
                           : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600'}
                         border
                       `}
@@ -445,7 +446,7 @@ const CurlToRequestsComponent: React.FC = () => {
                   ))}
                 </div>
               </div>
-              
+
               <Button
                 variant="primary"
                 className="w-full"
@@ -454,7 +455,7 @@ const CurlToRequestsComponent: React.FC = () => {
                 转换
               </Button>
             </div>
-            
+
             <div className="mt-6 text-sm text-gray-600 dark:text-gray-400">
               <h4 className="font-medium mb-1">提示：</h4>
               <ul className="list-disc pl-5 space-y-1">
@@ -465,7 +466,7 @@ const CurlToRequestsComponent: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {error && (
           <div className="mb-4 p-3 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300 text-sm">
             {error}

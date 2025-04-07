@@ -272,7 +272,9 @@ const UrlParamsExtractorComponent = () => {
                       icon={<FiTrash2 className="h-4 w-4" />}
                       onClick={() => removeParam(param.id)}
                       className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                    />
+                    >
+                      删除
+                    </Button>
                   </div>
                 </div>
               ))

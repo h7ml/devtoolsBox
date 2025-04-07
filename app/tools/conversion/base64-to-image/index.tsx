@@ -357,7 +357,7 @@ const Base64ToImageComponent: React.FC = () => {
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">原始Base64数据</h4>
                   <Button
                     variant="ghost"
-                    size="xs"
+                    size="sm"
                     icon={<FiCopy className="h-3 w-3" />}
                     onClick={() => {
                       navigator.clipboard.writeText(getBase64DataWithoutHeader());

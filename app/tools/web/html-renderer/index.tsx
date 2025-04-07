@@ -10,16 +10,16 @@ const HtmlRendererComponent = () => {
   const [htmlInput, setHtmlInput] = useState<string>('<div class="example">\n  <h1 style="color: blue;">Hello World</h1>\n  <p>This is a <strong>sample</strong> HTML to demonstrate the renderer.</p>\n  <button class="btn" onclick="alert(\'Button clicked!\')">Click Me</button>\n</div>');
   const [cssInput, setCssInput] = useState<string>('.example {\n  padding: 20px;\n  border: 1px solid #ccc;\n  border-radius: 8px;\n  max-width: 500px;\n  margin: 0 auto;\n}\n\n.btn {\n  background-color: #4CAF50;\n  color: white;\n  padding: 8px 16px;\n  border: none;\n  border-radius: 4px;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background-color: #45a049;\n}');
   const [jsInput, setJsInput] = useState<string>('// JavaScript code will run in the preview iframe\nconsole.log("Preview loaded");\n\n// Example: Change the heading color after 2 seconds\nsetTimeout(() => {\n  const heading = document.querySelector("h1");\n  if (heading) {\n    heading.style.color = "red";\n    console.log("Changed heading color");\n  }\n}, 2000);');
-  
+
   const [activeTab, setActiveTab] = useState<'html' | 'css' | 'js'>('html');
   const [renderMode, setRenderMode] = useState<'auto' | 'manual'>('manual');
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  
+
   // 自动渲染定时器
   const autoRenderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // 在组件卸载时清除定时器
   useEffect(() => {
     return () => {
@@ -28,20 +28,20 @@ const HtmlRendererComponent = () => {
       }
     };
   }, []);
-  
+
   // 当输入内容变化且为自动渲染模式时，设置延迟渲染
   useEffect(() => {
     if (renderMode === 'auto') {
       if (autoRenderTimeoutRef.current) {
         clearTimeout(autoRenderTimeoutRef.current);
       }
-      
+
       autoRenderTimeoutRef.current = setTimeout(() => {
         renderPreview();
       }, 1000);
     }
   }, [htmlInput, cssInput, jsInput, renderMode]);
-  
+
   // 生成预览HTML
   const generatePreviewHTML = (): string => {
     return `
@@ -82,38 +82,38 @@ const HtmlRendererComponent = () => {
       </html>
     `;
   };
-  
+
   // 渲染预览
   const renderPreview = () => {
     try {
       setError(null);
-      
+
       if (!iframeRef.current) return;
-      
+
       const iframe = iframeRef.current;
       const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-      
+
       if (!iframeDoc) {
         setError("无法访问iframe文档");
         return;
       }
-      
+
       // 写入HTML
       iframeDoc.open();
       iframeDoc.write(generatePreviewHTML());
       iframeDoc.close();
-      
+
       // 拦截console输出
       if (iframe.contentWindow) {
-        const originalConsoleLog = iframe.contentWindow.console.log;
-        const originalConsoleError = iframe.contentWindow.console.error;
-        
-        iframe.contentWindow.console.log = function(...args) {
+        const originalConsoleLog = (iframe.contentWindow as any).console.log;
+        const originalConsoleError = (iframe.contentWindow as any).console.error;
+
+        (iframe.contentWindow as any).console.log = function (...args) {
           originalConsoleLog.apply(this, args);
           // 这里可以将console输出显示在UI上
         };
-        
-        iframe.contentWindow.console.error = function(...args) {
+
+        (iframe.contentWindow as any).console.error = function (...args) {
           originalConsoleError.apply(this, args);
           // 这里可以将错误显示在UI上
         };
@@ -122,7 +122,7 @@ const HtmlRendererComponent = () => {
       setError(`渲染错误: ${e.message}`);
     }
   };
-  
+
   // 复制完整HTML
   const handleCopy = () => {
     const fullHtml = generatePreviewHTML();
@@ -130,7 +130,7 @@ const HtmlRendererComponent = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-  
+
   // 根据标签页显示对应输入区
   const renderInputArea = () => {
     switch (activeTab) {
@@ -171,7 +171,7 @@ const HtmlRendererComponent = () => {
         return null;
     }
   };
-  
+
   return (
     <Card className="w-full">
       <CardHeader
@@ -187,40 +187,37 @@ const HtmlRendererComponent = () => {
             <div className="mb-4">
               <div className="flex border-b border-gray-200 dark:border-gray-700">
                 <button
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === 'html'
-                      ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-500'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                  }`}
+                  className={`px-4 py-2 text-sm font-medium ${activeTab === 'html'
+                    ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-500'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                    }`}
                   onClick={() => setActiveTab('html')}
                 >
                   HTML
                 </button>
                 <button
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === 'css'
-                      ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-500'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                  }`}
+                  className={`px-4 py-2 text-sm font-medium ${activeTab === 'css'
+                    ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-500'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                    }`}
                   onClick={() => setActiveTab('css')}
                 >
                   CSS
                 </button>
                 <button
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === 'js'
-                      ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-500'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                  }`}
+                  className={`px-4 py-2 text-sm font-medium ${activeTab === 'js'
+                    ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-500'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                    }`}
                   onClick={() => setActiveTab('js')}
                 >
                   JavaScript
                 </button>
               </div>
             </div>
-            
+
             {renderInputArea()}
-            
+
             <div className="flex justify-between items-center mt-4">
               <div className="flex items-center">
                 <label className="flex items-center mr-4">
@@ -242,7 +239,7 @@ const HtmlRendererComponent = () => {
                   <span className="text-sm text-gray-600 dark:text-gray-400">自动渲染</span>
                 </label>
               </div>
-              
+
               {renderMode === 'manual' && (
                 <Button
                   onClick={renderPreview}
@@ -252,14 +249,14 @@ const HtmlRendererComponent = () => {
                 </Button>
               )}
             </div>
-            
+
             {error && (
               <div className="mt-4 p-3 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300">
                 {error}
               </div>
             )}
           </div>
-          
+
           {/* 右侧：预览区 */}
           <div>
             <div className="flex justify-between items-center mb-2">
@@ -273,7 +270,7 @@ const HtmlRendererComponent = () => {
                 {copied ? '已复制' : '复制完整HTML'}
               </Button>
             </div>
-            
+
             <div className="h-[450px] border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
               <div className="w-full h-8 bg-gray-100 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600 flex items-center px-3 py-1">
                 <div className="flex space-x-1.5">
@@ -285,7 +282,7 @@ const HtmlRendererComponent = () => {
                   HTML预览
                 </div>
               </div>
-              
+
               <iframe
                 ref={iframeRef}
                 title="HTML预览"
@@ -293,7 +290,7 @@ const HtmlRendererComponent = () => {
                 sandbox="allow-scripts allow-same-origin"
               />
             </div>
-            
+
             <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
               <p>注意：预览环境为安全沙盒，某些功能可能受限。</p>
             </div>

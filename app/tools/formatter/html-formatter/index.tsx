@@ -58,9 +58,9 @@ const HtmlFormatter = () => {
       // 动态导入prettier相关模块
       const [prettier, parserHtml, parserBabel, parserCss] = await Promise.all([
         import('prettier/standalone'),
-        import('prettier/parser-html'),
-        import('prettier/parser-babel'),
-        import('prettier/parser-postcss')
+        import('prettier/plugins/html'),
+        import('prettier/plugins/babel'),
+        import('prettier/plugins/postcss')
       ]);
 
       const formatted = await prettier.default.format(input, {
@@ -198,7 +198,6 @@ const HtmlFormatter = () => {
                     type="number"
                     min="40"
                     max="200"
-                    size="sm"
                     value={config.printWidth.toString()}
                     onChange={(e) => updateConfig('printWidth', Number(e.target.value) || 80)}
                   />
@@ -209,7 +208,6 @@ const HtmlFormatter = () => {
                     type="number"
                     min="1"
                     max="8"
-                    size="sm"
                     value={config.tabWidth.toString()}
                     onChange={(e) => updateConfig('tabWidth', Number(e.target.value) || 2)}
                   />

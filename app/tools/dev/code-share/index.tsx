@@ -439,7 +439,7 @@ const CodeShareComponent: React.FC = () => {
                 清空
               </Button>
               <Button
-                variant="default"
+                variant="primary"
                 size="sm"
                 icon={<FiShare2 className="h-4 w-4" />}
                 onClick={createSnippet}

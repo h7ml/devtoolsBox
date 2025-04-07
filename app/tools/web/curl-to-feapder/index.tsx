@@ -75,8 +75,9 @@ const CurlToFeapderComponent: React.FC = () => {
     }
 
     // 提取headers
-    const headerMatches = [...processedCommand.matchAll(/-H\s+['"]([^'"]+)['"]|--header\s+['"]([^'"]+)['"]/g)];
-    for (const match of headerMatches) {
+    const headerRegex = /-H\s+['"]([^'"]+)['"]|--header\s+['"]([^'"]+)['"]/g;
+    let match;
+    while ((match = headerRegex.exec(processedCommand)) !== null) {
       const headerStr = match[1] || match[2];
       const separatorIndex = headerStr.indexOf(':');
       if (separatorIndex > 0) {
@@ -124,9 +125,9 @@ const CurlToFeapderComponent: React.FC = () => {
     // 提取URL参数
     try {
       const urlObj = new URL(result.url);
-      for (const [key, value] of urlObj.searchParams.entries()) {
+      urlObj.searchParams.forEach((value, key) => {
         result.params[key] = value;
-      }
+      });
       // 更新URL，移除参数
       result.url = `${urlObj.origin}${urlObj.pathname}`;
     } catch (e) {

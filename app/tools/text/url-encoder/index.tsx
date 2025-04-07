@@ -39,12 +39,12 @@ const UrlEncoder = () => {
           break;
         case 'all':
           // 自定义编码，包括所有字符
-          encoded = [...text]
+          encoded = text.split('')
             .map(char => {
               if (/[a-zA-Z0-9\-_.!~*'()]/.test(char)) {
                 return char;
               }
-              return [...new TextEncoder().encode(char)]
+              return Array.from(new TextEncoder().encode(char))
                 .map(byte => '%' + byte.toString(16).toUpperCase().padStart(2, '0'))
                 .join('');
             })
@@ -158,8 +158,8 @@ const UrlEncoder = () => {
         <div className="flex border-b border-gray-200 dark:border-gray-700">
           <button
             className={`flex-1 px-4 py-3 text-center text-sm font-medium ${mode === 'encode'
-                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-b-2 border-blue-500'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-b-2 border-blue-500'
+              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
               }`}
             onClick={() => handleModeChange('encode')}
           >
@@ -167,8 +167,8 @@ const UrlEncoder = () => {
           </button>
           <button
             className={`flex-1 px-4 py-3 text-center text-sm font-medium ${mode === 'decode'
-                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-b-2 border-blue-500'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-b-2 border-blue-500'
+              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
               }`}
             onClick={() => handleModeChange('decode')}
           >
@@ -184,8 +184,8 @@ const UrlEncoder = () => {
             <div className="flex flex-wrap gap-2">
               <button
                 className={`px-3 py-1.5 text-sm rounded-md ${encodingType === 'standard'
-                    ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 onClick={() => handleEncodingTypeChange('standard')}
                 title="编码所有特殊字符，适用于URL参数值"
@@ -194,8 +194,8 @@ const UrlEncoder = () => {
               </button>
               <button
                 className={`px-3 py-1.5 text-sm rounded-md ${encodingType === 'component'
-                    ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 onClick={() => handleEncodingTypeChange('component')}
                 title="保留URL有效字符，适用于完整URL"
@@ -204,8 +204,8 @@ const UrlEncoder = () => {
               </button>
               <button
                 className={`px-3 py-1.5 text-sm rounded-md ${encodingType === 'all'
-                    ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 onClick={() => handleEncodingTypeChange('all')}
                 title="编码所有非ASCII字符"

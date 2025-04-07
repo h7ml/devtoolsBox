@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 // 引入prettier库进行JS格式化
 import * as prettier from 'prettier';
-import parserBabel from 'prettier/parser-babel';
+import parserBabel from 'prettier/plugins/babel';
 
 // 格式化选项类型
 type FormatOptions = {
