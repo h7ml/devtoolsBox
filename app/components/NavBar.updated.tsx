@@ -8,6 +8,7 @@ import { useTheme } from 'next-themes';
 import { useColorMode } from '@chakra-ui/react';
 import AuthStatus from './auth/AuthStatus';
 import LogoDisplay from './logo/LogoDisplay';
+import MobileAuthMenu from './MobileAuthMenu';
 
 const NavBar = () => {
   const { theme, setTheme } = useTheme();
@@ -186,34 +187,30 @@ const NavBar = () => {
               关于
             </Link>
 
-            <Link
-              href="/auth/login"
-              onClick={toggleMenu}
-              className="block px-3 py-2 rounded-md text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors"
-            >
-              登录/注册
-            </Link>
+            {/* 移动端登录/注册菜单 */}
+            <MobileAuthMenu onClose={toggleMenu} />
 
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
               <button
                 onClick={handleToggleTheme}
-                className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 focus:outline-none transition-colors"
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors"
                 aria-label="切换主题"
               >
                 {isDarkMode ? (
-                  <FiSun className="h-5 w-5" />
+                  <FiSun className="h-5 w-5 mr-2" />
                 ) : (
-                  <FiMoon className="h-5 w-5" />
+                  <FiMoon className="h-5 w-5 mr-2" />
                 )}
+                {isDarkMode ? '浅色模式' : '深色模式'}
               </button>
+
               <a
                 href="https://github.com/h7ml/devtoolsBox"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none transition-colors"
-                onClick={toggleMenu}
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-500 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors"
               >
-                <FiGithub className="mr-2 -ml-1 h-4 w-4" />
+                <FiGithub className="h-5 w-5 mr-2" />
                 GitHub
               </a>
             </div>

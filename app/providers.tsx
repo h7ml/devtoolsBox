@@ -4,6 +4,7 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { ThemeProvider } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import chakraTheme from './chakra-theme';
+import AuthProvider from './providers/auth-provider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // 添加客户端水合检测
@@ -23,7 +24,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ColorModeScript initialColorMode={chakraTheme.config.initialColorMode} />
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <ChakraProvider theme={chakraTheme} resetCSS={false}>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ChakraProvider>
       </ThemeProvider>
     </>
