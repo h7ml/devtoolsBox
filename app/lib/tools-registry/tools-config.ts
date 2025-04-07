@@ -2,7 +2,7 @@
  * 工具配置文件
  * 
  * 由脚本自动生成，请勿手动修改
- * 生成时间: 2025-04-07T02:13:26.296Z
+ * 生成时间: 2025-04-07T02:39:44.138Z
  */
 import { ToolCategory } from './types';
 
@@ -139,6 +139,11 @@ export const toolConfigs: ToolConfig[] = [
     id: 'cookie-formatter',
     category: 'web',
     importPath: () => import('../../tools/web/cookie-formatter')
+  },
+  {
+    id: 'curl-to-feapder',
+    category: 'web',
+    importPath: () => import('../../tools/web/curl-to-feapder')
   },
   {
     id: 'curl-to-requests',
