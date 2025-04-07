@@ -101,7 +101,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
             )}
 
             {!title && showCloseButton && (
-              <div className="absolute top-4 right-4 z-10">
+              <div className="absolute top-6 right-8 z-10">
                 <button
                   onClick={onClose}
                   className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 focus:outline-none"
