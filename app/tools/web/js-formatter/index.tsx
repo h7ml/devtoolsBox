@@ -1,14 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiRefreshCw, FiCopy, FiCheck, FiCode } from 'react-icons/fi';
 import { Card, CardHeader, CardContent } from '../../../components/design-system/Card';
 import Button from '../../../components/design-system/Button';
 import { AnimatePresence, motion } from 'framer-motion';
-
-// 引入prettier库进行JS格式化
-import * as prettier from 'prettier';
-import parserBabel from 'prettier/plugins/babel';
 
 // 格式化选项类型
 type FormatOptions = {
@@ -26,6 +22,28 @@ const JsFormatterComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
   const [formatting, setFormatting] = useState<boolean>(false);
+  const [prettierLoaded, setPrettierLoaded] = useState<boolean>(false);
+  const [prettier, setPrettier] = useState<any>(null);
+  const [parserBabel, setParserBabel] = useState<any>(null);
+
+  // 加载 prettier 库
+  useEffect(() => {
+    const loadPrettier = async () => {
+      try {
+        const [prettierModule, babelParser] = await Promise.all([
+          import('prettier/standalone'),
+          import('prettier/plugins/babel')
+        ]);
+        setPrettier(prettierModule);
+        setParserBabel(babelParser);
+        setPrettierLoaded(true);
+      } catch (err) {
+        setError(`加载格式化库失败: ${err.message}`);
+      }
+    };
+
+    loadPrettier();
+  }, []);
 
   // 格式化选项
   const [options, setOptions] = useState<FormatOptions>({
@@ -47,6 +65,11 @@ const JsFormatterComponent = () => {
 
   // 格式化JS代码
   const formatCode = async () => {
+    if (!prettierLoaded || !prettier) {
+      setError('格式化工具尚未加载完成，请稍候');
+      return;
+    }
+
     try {
       setError(null);
       setFormatting(true);
