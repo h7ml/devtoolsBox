@@ -140,14 +140,26 @@ const NavBarContent = () => {
 
               <button
                 onClick={handleToggleTheme}
-                className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 backdrop-blur-sm focus:outline-none transition-colors"
+                className="relative p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 backdrop-blur-sm focus:outline-none transition-all duration-500 group overflow-hidden"
                 aria-label="切换主题"
               >
-                {isDarkMode ? (
-                  <FiSun className="h-5 w-5" />
-                ) : (
-                  <FiMoon className="h-5 w-5" />
-                )}
+                <div className="relative z-10 flex items-center justify-center">
+                  {isDarkMode ? (
+                    <FiSun className="h-5 w-5 transform transition-all duration-500 dark-mode-glow animate-spin-slow" />
+                  ) : (
+                    <FiMoon className="h-5 w-5 transform transition-all duration-500" />
+                  )}
+                </div>
+                <span
+                  className={`absolute inset-0 rounded-full bg-gradient-to-r transition-opacity duration-500 
+                    ${isDarkMode ? 'from-amber-200/10 to-amber-300/20 opacity-100' : 'from-blue-400/10 to-blue-500/20 opacity-0'} 
+                    dark:group-hover:opacity-100`}
+                ></span>
+                <span
+                  className={`absolute inset-0 rounded-full transition-opacity duration-500 
+                    ${isDarkMode ? 'opacity-0' : 'bg-gradient-to-r from-blue-400/10 to-blue-500/20 opacity-100'}
+                    group-hover:opacity-100`}
+                ></span>
               </button>
 
               {/* 根据登录状态显示登录按钮或用户信息 */}
@@ -348,3 +360,17 @@ const NavBarWithModals = () => {
 };
 
 export default NavBarWithModals;
+
+<style jsx global>{`
+  @keyframes spin-slow {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  .animate-spin-slow {
+    animation: spin-slow 10s linear infinite;
+  }
+`}</style>
