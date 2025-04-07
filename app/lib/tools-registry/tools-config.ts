@@ -2,7 +2,7 @@
  * 工具配置文件
  * 
  * 由脚本自动生成，请勿手动修改
- * 生成时间: 2025-04-07T01:19:32.707Z
+ * 生成时间: 2025-04-07T02:13:26.296Z
  */
 import { ToolCategory } from './types';
 
@@ -40,11 +40,6 @@ export const toolConfigs: ToolConfig[] = [
 
   // JSON处理工具
   {
-    id: 'json-compare',
-    category: 'json',
-    importPath: () => import('../../tools/json/json-compare')
-  },
-  {
     id: 'json-formatter',
     category: 'json',
     importPath: () => import('../../tools/json/json-formatter')
@@ -75,6 +70,11 @@ export const toolConfigs: ToolConfig[] = [
     id: 'url-codec',
     category: 'misc',
     importPath: () => import('../../tools/encoding/url-codec')
+  },
+  {
+    id: 'dict-formatter',
+    category: 'misc',
+    importPath: () => import('../../tools/format/dict-formatter')
   },
   {
     id: 'diff-checker',
@@ -114,6 +114,11 @@ export const toolConfigs: ToolConfig[] = [
     importPath: () => import('../../tools/text/case-converter')
   },
   {
+    id: 'text-decoder',
+    category: 'text',
+    importPath: () => import('../../tools/text/text-decoder')
+  },
+  {
     id: 'url-encoder',
     category: 'text',
     importPath: () => import('../../tools/text/url-encoder')
@@ -129,6 +134,31 @@ export const toolConfigs: ToolConfig[] = [
     id: 'http-request',
     category: 'web',
     importPath: () => import('../../tools/crawler/http-request')
+  },
+  {
+    id: 'cookie-formatter',
+    category: 'web',
+    importPath: () => import('../../tools/web/cookie-formatter')
+  },
+  {
+    id: 'curl-to-requests',
+    category: 'web',
+    importPath: () => import('../../tools/web/curl-to-requests')
+  },
+  {
+    id: 'header-formatter',
+    category: 'web',
+    importPath: () => import('../../tools/web/header-formatter')
+  },
+  {
+    id: 'html-renderer',
+    category: 'web',
+    importPath: () => import('../../tools/web/html-renderer')
+  },
+  {
+    id: 'js-formatter',
+    category: 'web',
+    importPath: () => import('../../tools/web/js-formatter')
   },
   {
     id: 'url-params-extractor',
