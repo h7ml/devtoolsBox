@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { useEffect, useState, forwardRef } from 'react';
 import Logo from './Logo';
 
 interface AnimatedLogoProps {
@@ -18,9 +18,6 @@ const AnimatedLogo = forwardRef<SVGSVGElement, AnimatedLogoProps>(({
 }, ref) => {
   const [isAnimating, setIsAnimating] = useState(true);
   const [showText, setShowText] = useState(false);
-  const logoRef = useRef<SVGSVGElement>(null);
-
-  useImperativeHandle(ref, () => logoRef.current!, []);
 
   useEffect(() => {
     // Logo 先显示
@@ -48,17 +45,17 @@ const AnimatedLogo = forwardRef<SVGSVGElement, AnimatedLogoProps>(({
         transform transition-all duration-1000 ease-out
         ${isAnimating ? 'scale-110' : 'scale-100'}
       `}>
-        <Logo 
-          width={width} 
+        <Logo
+          ref={ref}
+          width={width}
           height={height}
-          ref={logoRef}
           className={`
             transition-all duration-700
             ${isAnimating ? 'animate-pulse' : ''}
           `}
         />
       </div>
-      
+
       <div className={`
         mt-4 text-center transform transition-all duration-500 
         ${showText ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
