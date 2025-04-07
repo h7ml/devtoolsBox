@@ -1,53 +1,60 @@
 # 工具列表
 
-## 已有的工具
+## 已有工具
 
-- [x] json-formatter - JSON 格式化工具
-- [x] html-formatter - HTML 格式化工具
-- [x] curl-converter - cURL 转换工具
-- [x] url-encoder - URL 编码/解码工具
-- [x] time-converter - 时间转换工具
-- [x] encryption-decryption - 加密/解密工具
-- [x] diff-checker - 差异对比工具
+- json-formatter - JSON格式化 ✅
+- html-formatter - HTML格式化 ✅
+- curl-converter - cURL转换器 ✅
+- url-encoder - URL编解码 ✅
+- time-converter - 时间转换 ✅
+- encryption-decryption - 加密解密 ✅
+- diff-checker - 差异对比 ✅
 
-## 待加工具
+## 待添加工具
 
-- [x] json-compare - JSON 对比工具 (已完成)
-- [x] header-formatter - HTTP 请求头格式化工具 (已完成)
-- [x] cookie-formatter - Cookie 格式化工具 (已完成)
-- [x] dict-formatter - 字典格式化工具 (已完成)
-- [x] js-formatter - JavaScript 格式化工具 (已完成)
-- [x] curl-to-requests - cURL 转 Python requests (已完成)
-- [ ] curl-to-feapder - cURL 转 feapder
-- [x] url-params-extractor - URL 参数提取工具 (已完成)
-- [x] html-renderer - HTML 渲染工具 (已完成)
-- [x] text-decoder - 文本编解码工具 (已完成)
-- [ ] json-to-sql - JSON 转 SQL
-- [ ] base64-to-image - Base64 转图片
-- [ ] code-share - 代码分享工具
+- json-compare - JSON比较器 ✅
+- header-formatter - HTTP头格式化 ✅
+- cookie-formatter - Cookie格式化 ✅
+- dict-formatter - 字典格式化 ✅
+- js-formatter - JavaScript格式化 ✅
+- curl-to-requests - cURL转Requests ✅
+- curl-to-feapder - cURL转Feapder ✅
+- url-params-extractor - URL参数提取器 ✅
+- html-renderer - HTML渲染器 ✅
+- text-decoder - 文本解码器 ✅
+- json-to-sql - JSON转SQL ✅
+- base64-to-image - Base64转图片 ✅
+- code-share - 代码分享 ✅
 
 ## 实现计划
 
 ### 第一批
 
-优先级从高到低：
+优先级高：
+- json-compare ✅
+- url-params-extractor ✅
+- js-formatter ✅
 
-1. [x] json-compare - JSON 对比工具
-2. [x] url-params-extractor - URL 参数提取工具
-3. [x] js-formatter - JavaScript 格式化工具
-4. [x] header-formatter - HTTP 请求头格式化工具
-5. [x] cookie-formatter - Cookie 格式化工具
+优先级中：
+- header-formatter ✅
+- cookie-formatter ✅
 
 ### 第二批
 
-1. [x] html-renderer - HTML 渲染工具
-2. [x] text-decoder - 文本编解码工具
-3. [x] dict-formatter - 字典格式化工具
-4. [x] curl-to-requests - cURL 转 Python requests
-5. [ ] curl-to-feapder - cURL 转 feapder
+优先级高：
+- html-renderer ✅
+- text-decoder ✅
+
+优先级中：
+- dict-formatter ✅
+- curl-to-requests ✅
 
 ### 第三批
 
-1. [ ] json-to-sql - JSON 转 SQL 
-2. [ ] base64-to-image - Base64 转图片
-3. [ ] code-share - 代码分享工具
+优先级高：
+- json-to-sql ✅
+- base64-to-image ✅
+- code-share ✅
+
+优先级中：
+- curl-to-feapder ✅

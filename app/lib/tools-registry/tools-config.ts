@@ -2,7 +2,7 @@
  * 工具配置文件
  * 
  * 由脚本自动生成，请勿手动修改
- * 生成时间: 2025-04-07T02:39:44.138Z
+ * 生成时间: 2025-04-07T02:56:07.544Z
  */
 import { ToolCategory } from './types';
 
@@ -17,6 +17,11 @@ export interface ToolConfig {
  */
 export const toolConfigs: ToolConfig[] = [
   // 开发辅助工具
+  {
+    id: 'code-share',
+    category: 'dev',
+    importPath: () => import('../../tools/dev/code-share')
+  },
   {
     id: 'curl-converter',
     category: 'dev',
@@ -45,12 +50,22 @@ export const toolConfigs: ToolConfig[] = [
     importPath: () => import('../../tools/json/json-formatter')
   },
   {
+    id: 'json-to-sql',
+    category: 'json',
+    importPath: () => import('../../tools/json/json-to-sql')
+  },
+  {
     id: 'json-to-types',
     category: 'json',
     importPath: () => import('../../tools/json/json-to-types')
   },
 
   // 其他工具
+  {
+    id: 'base64-to-image',
+    category: 'misc',
+    importPath: () => import('../../tools/conversion/base64-to-image')
+  },
   {
     id: 'color-converter',
     category: 'misc',
