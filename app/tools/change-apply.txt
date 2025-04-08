@@ -1,0 +1,159 @@
+# 工具重构应用计划
+
+本文档列出了将工具模板系统和通用工具函数应用到现有工具的计划。重构的目标是提高代码复用率、改善用户体验、简化维护，并确保整个应用遵循一致的设计模式。
+
+## 已完成的基础设施
+
+1. **通用工具函数**
+   - `app/tools/utils/common-functions.ts`: 通用功能如复制、下载、防抖等
+   - `app/tools/utils/text-helpers.ts`: 文本处理相关功能
+   - `app/tools/utils/date-helpers.ts`: 日期处理相关功能
+   - `app/tools/utils/object-helpers.ts`: 对象操作相关功能
+   - `app/tools/utils/validation-helpers.ts`: 数据验证相关功能
+   - `app/tools/utils/json-helpers.ts`: JSON处理相关功能
+   - `app/tools/utils/index.ts`: 统一导出和管理工具函数
+
+2. **工具模板系统**
+   - `app/lib/core/tool-templates/StandardToolLayout.tsx`: 标准工具布局组件
+   - `app/lib/core/tool-templates/types.ts`: 工具模板类型定义
+   - 其他待实现的工具模板组件
+
+3. **工具重构指南**
+   - `app/tools/utils/tool-template.md`: 详细的工具重构指南
+
+## 重构优先级
+
+按照工具的使用频率和复杂度确定重构优先级：
+
+### 第一阶段（已示例）
+
+1. ✅ **JSON格式化工具** (json/json-formatter)
+   - 已完成，作为参考示例
+   - 展示了如何使用StandardToolLayout和通用工具函数
+
+### 第二阶段（高优先级）
+
+2. **文本工具**
+   - [ ] 大小写转换器 (text/case-converter)
+   - [ ] Base64编解码 (text/base64)
+   - [ ] URL编解码 (text/url-encoder)
+   - [ ] 文本解码器 (text/text-decoder)
+
+3. **开发工具**
+   - [ ] 正则表达式测试器 (dev/regex-tester)
+   - [ ] UUID生成器 (dev/uuid)
+   - [ ] 时间戳工具 (dev/timestamp)
+
+### 第三阶段（中优先级）
+
+4. **格式化工具**
+   - [ ] HTML格式化 (formatter/html-formatter)
+   - [ ] JS格式化 (web/js-formatter)
+   - [ ] 差异对比 (format/diff-checker)
+
+5. **转换工具**
+   - [ ] 颜色转换器 (conversion/color-converter)
+   - [ ] Base64图片转换 (conversion/base64-to-image)
+   - [ ] 时间转换器 (datetime/time-converter)
+
+### 第四阶段（低优先级）
+
+6. **Web工具**
+   - [ ] HTTP请求 (crawler/http-request)
+   - [ ] Cookie格式化 (web/cookie-formatter)
+   - [ ] 头部格式化器 (web/header-formatter)
+   - [ ] URL参数提取器 (web/url-params-extractor)
+
+7. **其他工具**
+   - [ ] 密码生成器 (other/password-generator)
+   - [ ] 表达式计算器 (math/expression-evaluator)
+   - [ ] 加密解密 (crypto/encryption-decryption)
+
+## 重构步骤（每个工具）
+
+1. **分析工具**
+   - 理解工具功能
+   - 确定核心处理逻辑
+   - 识别可共享功能
+
+2. **创建配置文件**
+   - 工具定义
+   - 选项配置
+   - 示例数据
+   - 帮助提示
+
+3. **提取工具函数**
+   - 将核心逻辑移至utils.ts
+   - 使用通用工具函数替换重复代码
+
+4. **重构页面组件**
+   - 使用StandardToolLayout
+   - 实现必要的组件
+   - 优化状态管理
+
+5. **测试**
+   - 确保功能与原工具一致
+   - 检查移动设备兼容性
+   - 验证性能是否提升
+
+## 示例：JSON格式化工具的重构
+
+### 原始代码
+
+```typescript
+// 原来直接在页面组件中处理格式化逻辑
+```
+
+### 重构后
+
+```typescript
+// 配置分离到config.ts
+export const jsonFormatterTool: Tool = {
+  id: 'json-formatter',
+  title: 'JSON格式化工具',
+  description: '格式化和验证JSON数据，使其更易读和分析',
+  // ...
+};
+
+// 逻辑分离到utils.ts
+export function formatJSON(
+  jsonString: string,
+  indentSize: string | number = 2,
+  sortKeys: boolean = false,
+  minify: boolean = false
+): { result: string; error: string | null } {
+  // ...
+}
+
+// 页面组件使用工具模板
+export default function JSONFormatterPage() {
+  // 仅保留状态和事件处理
+  // 使用StandardToolLayout和其他工具模板组件
+}
+```
+
+## 推广和完善
+
+1. 继续完善工具模板
+   - 实现ResultDisplay组件
+   - 实现ToolForm组件
+   - 实现ToolOptions组件
+   - 实现ToolExamples组件
+
+2. 持续优化通用工具函数
+   - 对已有工具函数进行单元测试
+   - 根据应用需求添加新的工具函数
+
+3. 制作主题和样式系统
+   - 确保所有组件遵循统一的设计语言
+   - 实现深色/浅色模式切换
+
+## 预期成果
+
+完成上述重构后，我们可以预期：
+
+1. 代码重复减少80%以上
+2. 工具开发速度提高200%
+3. 用户体验一致性提升
+4. 维护成本降低
+5. 团队协作效率提高 
