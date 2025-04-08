@@ -1,0 +1,21 @@
+{
+  "files.watcherExclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.git": true
+  },
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "typescript.tsserver.log": "off",
+  "typescript.tsserver.trace.server": "off",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "never"
+  },
+  "editor.formatOnType": false, // 控制编辑器在键入一行后，是否自动格式化该行
+  "editor.formatOnSave": false, // 保存自动格式化，默认只支持 javascript .js 文件
+  "files.trimTrailingWhitespace": false, // 保存文件时删除行尾的空格
+  "editor.quickSugges tions": {
+    "other": true,
+    "comments": false,
+    "strings": false
+  }
+}

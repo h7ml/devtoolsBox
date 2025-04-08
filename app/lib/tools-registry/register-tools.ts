@@ -250,4 +250,167 @@ export function getRelatedTools(toolId: string, limit: number = 4): Tool[] {
   return sameCategoryTools
     .sort(() => 0.5 - Math.random())
     .slice(0, limit);
+}
+
+// 以下是传统注册方法的API，已被现代API取代
+// 保留这些函数签名以保持向后兼容性，但内部实现转发到新API
+
+// 工具数据存储 - 保留用于向后兼容
+const toolsRegistry: Record<string, Record<string, Tool>> = {};
+
+/**
+ * 传统方式注册工具 - 已被新API取代，但保留用于向后兼容
+ * @deprecated 使用 registerTool 替代
+ */
+export function legacyRegisterTool(tool: Tool): boolean {
+  try {
+    // 调用新API注册
+    registerTool(tool);
+    return true;
+  } catch (error) {
+    console.error('Error registering tool:', error);
+    return false;
+  }
+}
+
+/**
+ * 批量注册工具 - 已被新API取代，但保留用于向后兼容
+ * @deprecated 使用 registerAllTools 替代
+ */
+export function registerTools(tools: Tool[]): number {
+  let successCount = 0;
+  
+  for (const tool of tools) {
+    try {
+      registerTool(tool);
+      successCount++;
+    } catch (error) {
+      console.error(`Error registering tool ${tool.id}:`, error);
+    }
+  }
+  
+  return successCount;
+}
+
+/**
+ * 获取指定类别和ID的工具 - 已被新API取代，但保留用于向后兼容
+ * @deprecated 使用 getToolById 替代
+ */
+export async function getTool(category: string, id: string): Promise<Tool | null> {
+  try {
+    const tool = getToolById(id);
+    return tool || null;
+  } catch (error) {
+    console.error(`Error getting tool ${category}/${id}:`, error);
+    return null;
+  }
+}
+
+/**
+ * 获取所有工具的传统API版本 - 已被新API取代，但保留用于向后兼容
+ * @deprecated 使用 getAllTools 替代
+ */
+export async function legacyGetAllTools(): Promise<Tool[]> {
+  try {
+    return getAllTools();
+  } catch (error) {
+    console.error('Error getting all tools:', error);
+    return [];
+  }
+}
+
+/**
+ * 获取指定类别的所有工具的传统API版本 - 已被新API取代，但保留用于向后兼容
+ * @deprecated 使用 getToolsByCategory 替代
+ */
+export async function legacyGetToolsByCategory(category: ToolCategory): Promise<Tool[]> {
+  try {
+    return getToolsByCategory(category);
+  } catch (error) {
+    console.error(`Error getting tools for category ${category}:`, error);
+    return [];
+  }
+}
+
+/**
+ * 搜索工具的传统API版本 - 已被新API取代，但保留用于向后兼容
+ * @deprecated 使用 searchTools 替代
+ */
+export async function legacySearchTools(
+  query: string,
+  options: {
+    categories?: string[];
+  } = {}
+): Promise<Tool[]> {
+  try {
+    let results = searchTools(query);
+    
+    // 应用类别过滤
+    if (options.categories && options.categories.length > 0) {
+      results = results.filter(tool => 
+        options.categories?.includes(tool.category)
+      );
+    }
+    
+    return results;
+  } catch (error) {
+    console.error('Error searching tools:', error);
+    return [];
+  }
+}
+
+/**
+ * 更新工具 - 已被新API取代，但保留用于向后兼容
+ */
+export async function updateTool(
+  category: string,
+  id: string,
+  updates: Partial<Tool>
+): Promise<Tool | null> {
+  try {
+    // 确保工具存在
+    const tool = getToolById(id);
+    if (!tool) {
+      return null;
+    }
+    
+    // 应用更新
+    const updatedTool = { ...tool, ...updates };
+    
+    // 更新注册表
+    registerTool(updatedTool);
+    
+    return updatedTool;
+  } catch (error) {
+    console.error(`Error updating tool ${category}/${id}:`, error);
+    return null;
+  }
+}
+
+/**
+ * 删除工具 - 新API暂不支持删除，保留用于向后兼容
+ */
+export async function deleteTool(category: string, id: string): Promise<boolean> {
+  try {
+    const tool = getToolById(id);
+    if (!tool) {
+      return false;
+    }
+    
+    // Map API支持删除
+    return registeredTools.delete(id);
+  } catch (error) {
+    console.error(`Error deleting tool ${category}/${id}:`, error);
+    return false;
+  }
+}
+
+/**
+ * 获取所有工具类别 - 工具类别现在是枚举类型，不需要从注册表中获取
+ */
+export async function getAllCategories(): Promise<string[]> {
+  // 从已注册工具中提取唯一类别
+  const categories = new Set<string>();
+  getAllTools().forEach(tool => categories.add(tool.category));
+  return Array.from(categories);
 } 

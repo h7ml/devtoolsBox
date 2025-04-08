@@ -6,11 +6,16 @@ import { registerAllTools, getToolById, getRelatedTools } from '../../../lib/too
 import { Tool } from '../../../lib/tools-registry/types';
 import NavBarWithModals from '../../../components/NavBarWithModals';
 import ToolCard from '../../../components/ToolCard';
-import { FiArrowLeft, FiStar, FiHome, FiChevronRight, FiBox, FiClock, FiInfo } from 'react-icons/fi';
+import { FiArrowLeft, FiStar, FiHome, FiChevronRight, FiBox, FiClock, FiInfo, FiLayers } from 'react-icons/fi';
 import Link from 'next/link';
 import { useFavorites } from '../../../hooks/useFavorites';
 import { categoryBadgeColorMap, categoryNameMap } from '../../../lib/tools-registry/categories';
 import { motion, AnimatePresence } from 'framer-motion';
+import StructuredData from '../../../components/StructuredData';
+import { generateToolStructuredData, generateBreadcrumbStructuredData } from '../../../components/dynamicSEO';
+import CommentSection from '../../../components/comments/CommentSection';
+import DetailedDescription from '../../../components/tool-templates/DetailedDescription';
+import { getDescriptionTemplate } from '../../../components/tool-templates/DetailedDescription';
 
 export default function ToolPage() {
   const params = useParams();
@@ -19,6 +24,8 @@ export default function ToolPage() {
   const [relatedTools, setRelatedTools] = useState<Tool[]>([]);
   const { isFavorite, toggleFavorite } = useFavorites();
   const [isInfoVisible, setIsInfoVisible] = useState(false);
+  const [structuredData, setStructuredData] = useState<any>(null);
+  const [breadcrumbData, setBreadcrumbData] = useState<any>(null);
 
   // 加载工具并记录使用历史，仅在初始化和路由参数变化时执行
   useEffect(() => {
@@ -34,6 +41,17 @@ export default function ToolPage() {
             // 获取相关工具
             const related = getRelatedTools(foundTool.id, 4);
             setRelatedTools(related);
+
+            // 生成结构化数据
+            setStructuredData(generateToolStructuredData(foundTool));
+
+            // 生成面包屑结构化数据
+            setBreadcrumbData(generateBreadcrumbStructuredData([
+              { name: '首页', item: '/' },
+              { name: '工具', item: '/tools' },
+              { name: categoryNameMap[params.category as string] || params.category as string, item: `/tools?category=${params.category}` },
+              { name: foundTool.name, item: `/tools/${params.category}/${foundTool.id}` }
+            ]));
 
             // 记录最近使用
             try {
@@ -109,9 +127,24 @@ export default function ToolPage() {
 
   const categoryName = categoryNameMap[params.category as string] || params.category as string;
 
+  // 获取该工具类型的描述模板
+  const descriptionTemplate = getDescriptionTemplate(params.category as string);
+  
+  // 扩展描述模板，确保所有可选字段都有值
+  const extendedTemplate = {
+    ...descriptionTemplate,
+    limitations: descriptionTemplate.limitations || [],
+    relatedLinks: descriptionTemplate.relatedLinks || [],
+    faq: descriptionTemplate.faq || []
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NavBarWithModals />
+
+      {/* 添加结构化数据 */}
+      {structuredData && <StructuredData data={structuredData} />}
+      {breadcrumbData && <StructuredData data={breadcrumbData} />}
 
       {/* 导航头部 - 采用磨砂玻璃效果 */}
       <motion.div
@@ -235,6 +268,36 @@ export default function ToolPage() {
               {tool?.component && <tool.component />}
             </div>
           </div>
+
+          {/* 详细描述 */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mb-10 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700"
+          >
+            <div className="flex items-center mb-6">
+              <div className={`p-2 rounded-xl bg-gradient-to-r ${categoryBadgeColorMap[tool?.category || ''] || 'from-gray-500 to-gray-600'} mr-3 text-white shadow-md`}>
+                <FiLayers className="h-5 w-5" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">详细说明</h2>
+            </div>
+
+            <DetailedDescription
+              toolName={tool?.name || descriptionTemplate.toolName}
+              shortDescription={tool?.description || descriptionTemplate.shortDescription}
+              introduction={descriptionTemplate.introduction}
+              features={descriptionTemplate.features}
+              useCases={descriptionTemplate.useCases}
+              advantages={descriptionTemplate.advantages}
+              faq={extendedTemplate.faq}
+              limitations={extendedTemplate.limitations}
+              relatedLinks={extendedTemplate.relatedLinks}
+            />
+          </motion.div>
+
+          {/* 用户评论区 */}
+          {tool && <CommentSection toolId={tool.id} />}
 
           {/* 相关工具 */}
           {relatedTools.length > 0 && (

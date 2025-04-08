@@ -33,12 +33,23 @@ export interface Tool {
   category: ToolCategory;
   icon: IconType;
   component: React.ComponentType<any>;
-  meta: {
-    keywords: string[];
-    examples?: string[];
-    author?: string;
-    version?: string;
-  };
+  meta: ToolMeta;
+}
+
+export interface ToolMeta {
+  keywords: string[];
+  examples?: string[];
+  author?: string;
+  version?: string;
+  longDescription?: string;
+  useCases?: string[];
+  advantages?: string[];
+  relatedTerms?: string[];
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
+  documentation?: string;
+  lastUpdated?: string;
+  popularity?: number;
+  thumbnailUrl?: string;
 }
 
 export interface ToolRegistryInterface {
