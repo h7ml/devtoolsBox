@@ -1,0 +1,32 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 应用结构
+
+本项目遵循 Next.js 应用路由器约定。以下是 `app` 文件夹中主要目录的细分：
+
+## 核心应用文件
+
+- [app/layout.tsx](mdc:app/layout.tsx) - 包含提供者和全局元素的根布局
+- [app/page.tsx](mdc:app/page.tsx) - 首页
+- [app/providers.tsx](mdc:app/providers.tsx) - React 上下文提供者
+- [app/globals.css](mdc:app/globals.css) - 全局样式
+- [app/chakra-theme.ts](mdc:app/chakra-theme.ts) - Chakra UI 主题配置
+
+## 页面路由
+
+- `app/about/` - 关于页面
+- `app/auth/` - 身份验证页面（登录、注册等）
+- `app/dashboard/` - 用户仪表板
+- `app/privacy/` - 隐私政策页面
+- `app/terms/` - 服务条款页面
+- `app/topics/[slug]/` - 特定主题页面
+- `app/tool/[category]/[id]/` - 单个工具页面
+- `app/tools/[category]/[id]/` - 工具类别页面
+
+## API 路由
+
+- `app/api/auth/[...nextauth]/` - NextAuth.js 端点
+- `app/api/thumbnails/` - 缩略图生成 API

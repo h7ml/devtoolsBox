@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 认证系统
+
+该应用程序同时使用 NextAuth.js 和 Supabase 进行认证。
+
+## 认证页面
+
+- `app/auth/login/` - 登录页面
+- `app/auth/register/` - 注册页面
+- `app/auth/signin/` - 登录页面
+- `app/auth/forgot-password/` - 密码恢复
+- `app/auth/profile/` - 用户资料页面
+
+## 认证 API
+
+- `app/api/auth/[...nextauth]/` - NextAuth.js 端点
+
+## 认证库
+
+- `app/lib/auth/` - 认证实用工具
+- `app/lib/supabase/` - Supabase 客户端和实用工具
+
+## 认证组件
+
+- `app/components/auth/` - 认证 UI 组件
+- [app/components/MobileAuthMenu.tsx](mdc:app/components/MobileAuthMenu.tsx) - 移动认证菜单

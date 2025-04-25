@@ -1,0 +1,32 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 库和实用工具
+
+该应用程序包含各种组织在 `app/lib` 目录中的库和实用函数。
+
+## 核心库
+
+- `app/lib/core/` - 核心功能和服务
+- `app/lib/core/design-system/` - 设计系统实用工具
+- `app/lib/core/services/` - 核心服务
+- `app/lib/core/tool-templates/` - 工具模板实用工具
+
+## 功能库
+
+- `app/lib/auth/` - 认证实用工具
+- `app/lib/supabase/` - Supabase 客户端和实用工具
+- `app/lib/tools-registry/` - 工具注册和管理
+- `app/lib/topics/` - 主题和类别管理
+
+## 钩子和上下文
+
+- `app/hooks/` - 自定义 React 钩子
+- `app/contexts/` - React 上下文提供者
+
+## 状态管理
+
+- `app/store/` - Zustand 状态存储
+

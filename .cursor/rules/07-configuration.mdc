@@ -1,0 +1,31 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 配置文件
+
+DevToolsBox 项目的关键配置文件。
+
+## Next.js 配置
+
+- [next.config.js](mdc:next.config.js) - Next.js 配置
+- [next-env.d.ts](mdc:next-env.d.ts) - Next.js 的 TypeScript 定义
+
+## TypeScript 配置
+
+- [tsconfig.json](mdc:tsconfig.json) - TypeScript 配置
+
+## 样式配置
+
+- [tailwind.config.js](mdc:tailwind.config.js) - Tailwind CSS 配置
+- [postcss.config.js](mdc:postcss.config.js) - PostCSS 配置
+- [app/chakra-theme.ts](mdc:app/chakra-theme.ts) - Chakra UI 主题
+
+## 环境配置
+
+- [.env.local.example](mdc:.env.local.example) - 示例环境变量
+
+## 开发脚本
+
+- [scripts/generate-tool-configs.js](mdc:scripts/generate-tool-configs.js) - 工具配置生成器

@@ -1,0 +1,41 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 工具结构
+
+DevToolsBox 项目提供了各种按类别组织的开发者工具。
+
+## 工具组织
+
+- [app/tools/page.tsx](mdc:app/tools/page.tsx) - 主工具列表页面
+- [app/tools/layout.tsx](mdc:app/tools/layout.tsx) - 工具的布局包装器
+
+## 工具类别
+
+- `app/tools/conversion/` - 数据转换工具（base64、颜色等）
+- `app/tools/crawler/` - 网页抓取和 HTTP 请求工具
+- `app/tools/crypto/` - 加密和解密工具
+- `app/tools/datetime/` - 日期和时间转换工具
+- `app/tools/dev/` - 通用开发者工具（正则表达式、UUID、curl 等）
+- `app/tools/encoding/` - 编码和解码工具
+- `app/tools/format/` - 数据格式检查工具
+- `app/tools/formatter/` - 代码格式化工具
+- `app/tools/json/` - JSON 操作工具
+- `app/tools/math/` - 数学工具
+- `app/tools/other/` - 其他工具
+- `app/tools/text/` - 文本操作工具
+- `app/tools/web/` - 网络相关工具
+
+## 工具结构
+
+每个工具遵循类似的结构：
+
+- `app/tools/[category]/[id]/page.tsx` - 工具页面组件
+- `app/tools/[category]/[id]/components/` - 特定工具的组件
+- `app/tools/[category]/[id]/utils/` - 特定工具的实用函数
+
+## 工具模板
+
+- [app/components/tool-templates/](mdc:app/components/tool-templates) - 可复用工具模板

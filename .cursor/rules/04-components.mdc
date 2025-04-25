@@ -1,0 +1,31 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 组件结构
+
+该应用程序混合使用 Chakra UI 和自定义组件，按功能组织。
+
+## 关键组件
+
+- [app/components/NavBarWithModals.tsx](mdc:app/components/NavBarWithModals.tsx) - 主导航栏
+- [app/components/ToolCard.tsx](mdc:app/components/ToolCard.tsx) - 用于显示工具的卡片组件
+- [app/components/CategoryCard.tsx](mdc:app/components/CategoryCard.tsx) - 用于类别的卡片组件
+- [app/components/ToolTutorial.tsx](mdc:app/components/ToolTutorial.tsx) - 工具教程组件
+
+## 组件组织
+
+- `app/components/admin/` - 管理员特定组件
+- `app/components/auth/` - 认证组件
+- `app/components/comments/` - 评论区组件
+- `app/components/design-system/` - 基础 UI 组件
+- `app/components/logo/` - 徽标组件
+- `app/components/modals/` - 模态对话框组件
+- `app/components/tool-templates/` - 可复用工具模板
+
+## 布局组件
+
+- [app/components/AnimatedLayout.tsx](mdc:app/components/AnimatedLayout.tsx) - 带动画的布局
+- [app/components/PageTransition.tsx](mdc:app/components/PageTransition.tsx) - 页面过渡动画
+- [app/components/SkeletonLoader.tsx](mdc:app/components/SkeletonLoader.tsx) - 加载骨架
